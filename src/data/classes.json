@@ -1,0 +1,44 @@
+{
+  "classes": [
+    {
+      "id": "warrior",
+      "name": "Warrior",
+      "emoji": "⚔️",
+      "bonuses": {
+        "strength": 10,
+        "defense": 5,
+        "health": 20
+      }
+    },
+    {
+      "id": "mage",
+      "name": "Mage",
+      "emoji": "🔮",
+      "bonuses": {
+        "intelligence": 12,
+        "magic": 8,
+        "health": 10
+      }
+    },
+    {
+      "id": "ranger",
+      "name": "Ranger",
+      "emoji": "🏹",
+      "bonuses": {
+        "agility": 10,
+        "luck": 5,
+        "health": 15
+      }
+    },
+    {
+      "id": "healer",
+      "name": "Healer",
+      "emoji": "✨",
+      "bonuses": {
+        "wisdom": 10,
+        "magic": 5,
+        "health": 12
+      }
+    }
+  ]
+}

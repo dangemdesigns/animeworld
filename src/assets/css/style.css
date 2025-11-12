@@ -1,0 +1,292 @@
+/* ==========================================
+   Echoes of the Lantern - Main Stylesheet
+   Aesthetic: Pastel, Warm, and Welcoming
+   ========================================== */
+
+/* CSS Variables */
+:root {
+    /* Colors */
+    --bg-primary: #FBF7F0;
+    --bg-secondary: #F5EDE3;
+    --bg-panel: #FFFFFF;
+    --text-primary: #4A4A4A;
+    --text-secondary: #6B6B6B;
+    --accent-warm: #E8B4A0;
+    --accent-gold: #D4AF37;
+    --border-light: #E5D5C5;
+    --shadow: rgba(0, 0, 0, 0.1);
+
+    /* Spacing */
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 1rem;
+    --spacing-md: 1.5rem;
+    --spacing-lg: 2rem;
+
+    /* Border Radius */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+}
+
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+    padding: var(--spacing-md);
+}
+
+/* Game Container */
+.game-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Header */
+.game-header {
+    text-align: center;
+    padding: var(--spacing-lg);
+    background: var(--bg-panel);
+    border-radius: var(--radius-md);
+    box-shadow: 0 2px 8px var(--shadow);
+    margin-bottom: var(--spacing-md);
+}
+
+.game-header h1 {
+    font-size: 2.5rem;
+    color: var(--accent-warm);
+    margin-bottom: var(--spacing-xs);
+}
+
+.subtitle {
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+/* Main Game Area */
+.game-main {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+}
+
+/* Panels */
+.panel {
+    background: var(--bg-panel);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md);
+    box-shadow: 0 2px 8px var(--shadow);
+    border: 1px solid var(--border-light);
+}
+
+.panel h2 {
+    font-size: 1.5rem;
+    margin-bottom: var(--spacing-md);
+    color: var(--accent-warm);
+    border-bottom: 2px solid var(--border-light);
+    padding-bottom: var(--spacing-xs);
+}
+
+/* Haven Stats */
+.haven-stats {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.stat {
+    display: flex;
+    justify-content: space-between;
+    padding: var(--spacing-xs);
+    background: var(--bg-secondary);
+    border-radius: var(--radius-sm);
+}
+
+.stat-label {
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.stat-value {
+    font-weight: 700;
+    color: var(--accent-gold);
+}
+
+/* Heroes List */
+.heroes-list {
+    min-height: 300px;
+    max-height: 500px;
+    overflow-y: auto;
+    margin-bottom: var(--spacing-md);
+}
+
+.empty-message {
+    text-align: center;
+    color: var(--text-secondary);
+    padding: var(--spacing-lg);
+    font-style: italic;
+}
+
+.hero-card {
+    background: var(--bg-secondary);
+    border-radius: var(--radius-sm);
+    padding: var(--spacing-sm);
+    margin-bottom: var(--spacing-sm);
+    border-left: 4px solid var(--accent-warm);
+}
+
+.hero-card h3 {
+    font-size: 1.1rem;
+    margin-bottom: var(--spacing-xs);
+    color: var(--text-primary);
+}
+
+.hero-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-xs);
+    font-size: 0.9rem;
+}
+
+.hero-stat {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.25rem;
+}
+
+.hero-activity {
+    margin-top: var(--spacing-xs);
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+/* Activity Log */
+.activity-log {
+    max-height: 500px;
+    overflow-y: auto;
+    font-size: 0.9rem;
+}
+
+.log-entry {
+    padding: var(--spacing-xs);
+    margin-bottom: var(--spacing-xs);
+    background: var(--bg-secondary);
+    border-radius: var(--radius-sm);
+    border-left: 3px solid var(--accent-warm);
+}
+
+.log-entry.success {
+    border-left-color: #6BBE6B;
+}
+
+.log-entry.warning {
+    border-left-color: #E8B84A;
+}
+
+.log-entry.danger {
+    border-left-color: #D88484;
+}
+
+/* Buttons */
+.btn {
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 2px solid var(--border-light);
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px var(--shadow);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+.btn-primary {
+    background: var(--accent-warm);
+    color: white;
+    border-color: var(--accent-warm);
+    width: 100%;
+    font-weight: 600;
+}
+
+.btn-primary:hover {
+    background: #d9a48f;
+}
+
+.btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Footer */
+.game-footer {
+    display: flex;
+    gap: var(--spacing-sm);
+    justify-content: center;
+    padding: var(--spacing-md);
+    background: var(--bg-panel);
+    border-radius: var(--radius-md);
+    box-shadow: 0 2px 8px var(--shadow);
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+    border-radius: var(--radius-sm);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--accent-warm);
+    border-radius: var(--radius-sm);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #d9a48f;
+}
+
+/* Responsive Design */
+@media (max-width: 968px) {
+    .game-main {
+        grid-template-columns: 1fr;
+    }
+
+    .game-header h1 {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 600px) {
+    body {
+        padding: var(--spacing-sm);
+    }
+
+    .game-footer {
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
+    }
+}

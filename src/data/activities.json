@@ -1,0 +1,36 @@
+{
+  "activities": [
+    {
+      "id": "rest",
+      "name": "Resting",
+      "emoji": "😴",
+      "duration": 3000,
+      "goldReward": 0,
+      "expReward": 5
+    },
+    {
+      "id": "explore",
+      "name": "Exploring",
+      "emoji": "🗺️",
+      "duration": 5000,
+      "goldReward": 15,
+      "expReward": 10
+    },
+    {
+      "id": "hunt",
+      "name": "Hunting",
+      "emoji": "⚔️",
+      "duration": 7000,
+      "goldReward": 25,
+      "expReward": 20
+    },
+    {
+      "id": "gather",
+      "name": "Gathering",
+      "emoji": "🌾",
+      "duration": 4000,
+      "goldReward": 10,
+      "expReward": 8
+    }
+  ]
+}
