@@ -3,17 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Echoes of the Lantern - MyAnimeWorld.com</title>
-    <meta name="description" content="A peaceful haven management RPG where reincarnated souls find their way home">
+    <title>Echoes of the Lantern - Passive MMORPG</title>
+    <meta name="description" content="A peaceful passive MMORPG where reincarnated souls find their way home">
     <link rel="stylesheet" href="src/assets/css/style.css">
 </head>
 <body>
-    <div class="game-container">
+    <!-- Login/Register Screen -->
+    <div id="auth-container" class="auth-container">
+        <div class="auth-box">
+            <h1>🏮 Echoes of the Lantern</h1>
+            <p class="subtitle">A Passive MMORPG</p>
+
+            <!-- Login Form -->
+            <div id="login-form" class="auth-form">
+                <h2>Login</h2>
+                <input type="email" id="login-email" placeholder="Email" class="auth-input">
+                <input type="password" id="login-password" placeholder="Password" class="auth-input">
+                <button id="login-btn" class="btn btn-primary">Login</button>
+                <p class="auth-switch">Don't have an account? <a href="#" id="show-register">Register</a></p>
+            </div>
+
+            <!-- Register Form -->
+            <div id="register-form" class="auth-form" style="display: none;">
+                <h2>Register</h2>
+                <input type="text" id="register-username" placeholder="Username" class="auth-input">
+                <input type="email" id="register-email" placeholder="Email" class="auth-input">
+                <input type="password" id="register-password" placeholder="Password (min 6 characters)" class="auth-input">
+                <button id="register-btn" class="btn btn-primary">Register</button>
+                <p class="auth-switch">Already have an account? <a href="#" id="show-login">Login</a></p>
+            </div>
+
+            <div id="auth-message" class="auth-message"></div>
+
+            <!-- Admin Bypass Button (for testing) -->
+            <div class="admin-bypass">
+                <button id="admin-bypass-btn" class="btn btn-admin">[ADMIN] Quick Login</button>
+                <p class="admin-note">Dev mode: Auto-login as test user</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Game Container (hidden until logged in) -->
+    <div id="game-container" class="game-container" style="display: none;">
         <!-- Header -->
         <header class="game-header">
             <h1>🏮 Echoes of the Lantern</h1>
-            <p class="subtitle">A Haven for Wandering Souls</p>
+            <p class="subtitle">Welcome, <span id="username-display">Traveler</span> | Single-Player Mode</p>
         </header>
+
+        <!-- Offline Progress Notification -->
+        <div id="offline-progress" class="offline-progress" style="display: none;"></div>
 
         <!-- Main Game Area -->
         <main class="game-main">
@@ -23,7 +62,7 @@
                 <div class="haven-stats">
                     <div class="stat">
                         <span class="stat-label">Gold:</span>
-                        <span class="stat-value" id="gold">100</span>
+                        <span class="stat-value" id="gold">0</span>
                     </div>
                     <div class="stat">
                         <span class="stat-label">Day:</span>
@@ -34,6 +73,7 @@
                         <span class="stat-value" id="hero-count">0</span>
                     </div>
                 </div>
+                <button class="btn btn-primary" id="summon-btn">Summon Hero (50 Gold)</button>
             </section>
 
             <!-- Heroes Panel -->
@@ -42,28 +82,24 @@
                 <div id="heroes-list" class="heroes-list">
                     <p class="empty-message">No heroes yet. Summon your first hero!</p>
                 </div>
-                <button class="btn btn-primary" id="summon-btn">Summon Hero (50 Gold)</button>
             </section>
 
             <!-- Activity Log -->
-            <section class="panel log-panel">
+            <section class="panel log-panel log-panel-global">
                 <h2>📜 Activity Log</h2>
                 <div id="activity-log" class="activity-log">
-                    <p class="log-entry">Welcome to Echoes of the Lantern! Your haven awaits...</p>
+                    <p class="log-entry">Starting game...</p>
                 </div>
             </section>
         </main>
 
-        <!-- Footer Controls -->
-        <footer class="game-footer">
-            <button class="btn" id="save-btn">💾 Save Game</button>
-            <button class="btn" id="load-btn">📂 Load Game</button>
-            <button class="btn" id="reset-btn">🔄 Reset</button>
+        <!-- Footer -->
+        <footer class="game-footer" style="text-align: center; padding: 1rem;">
+            <p style="color: #6B6B6B; font-size: 0.9rem;">🏮 Single-Player Idle Game | Auto-saves to localStorage</p>
         </footer>
     </div>
 
     <!-- Load Scripts -->
-    <script type="module" src="src/core/gameState.js"></script>
-    <script type="module" src="src/core/game.js"></script>
+    <script type="module" src="src/core/multiplayer.js"></script>
 </body>
 </html>
