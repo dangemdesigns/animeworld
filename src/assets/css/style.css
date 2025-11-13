@@ -356,6 +356,35 @@ body {
     border: 1px solid #BBDEFB;
 }
 
+/* Admin Bypass Button */
+.admin-bypass {
+    margin-top: var(--spacing-lg);
+    padding-top: var(--spacing-md);
+    border-top: 2px dashed var(--border-light);
+}
+
+.btn-admin {
+    width: 100%;
+    background: linear-gradient(135deg, #FF6B6B 0%, #EE5A6F 100%);
+    color: white;
+    font-weight: 700;
+    border: none;
+    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+}
+
+.btn-admin:hover {
+    background: linear-gradient(135deg, #EE5A6F 0%, #DC4E5E 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(255, 107, 107, 0.4);
+}
+
+.admin-note {
+    margin-top: var(--spacing-xs);
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
 /* Logout button */
 .btn-logout {
     position: absolute;

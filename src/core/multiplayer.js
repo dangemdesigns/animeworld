@@ -91,6 +91,7 @@ function setupAuthListeners() {
         elements.authMessage.textContent = '';
     });
     document.getElementById('logout-btn').addEventListener('click', handleLogout);
+    document.getElementById('admin-bypass-btn').addEventListener('click', handleAdminBypass);
 
     // Enter key support
     elements.loginPassword.addEventListener('keypress', (e) => {
@@ -183,6 +184,39 @@ function handleLogout() {
     elements.authContainer.style.display = 'flex';
     elements.loginEmail.value = '';
     elements.loginPassword.value = '';
+}
+
+/**
+ * Handle admin bypass (development only)
+ */
+async function handleAdminBypass() {
+    const testEmail = 'admin@test.com';
+    const testPassword = 'admin123';
+
+    showAuthMessage('🔧 Admin bypass: Auto-logging in...', 'info');
+
+    try {
+        // Try to login first
+        let result = await api.login(testEmail, testPassword);
+
+        if (result.success) {
+            api.setToken(result.token);
+            await onLoginSuccess(result.user, result.token, result.offlineProgress);
+            return;
+        }
+    } catch (error) {
+        // If login fails, try to register
+        console.log('Test user not found, creating...');
+        try {
+            const registerResult = await api.register('AdminTest', testEmail, testPassword);
+            if (registerResult.success) {
+                api.setToken(registerResult.token);
+                await onLoginSuccess(registerResult.user, registerResult.token);
+            }
+        } catch (registerError) {
+            showAuthMessage('Admin bypass failed: ' + registerError.message, 'error');
+        }
+    }
 }
 
 /**
