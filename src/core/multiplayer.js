@@ -17,52 +17,56 @@ const elements = {};
  * Initialize the game
  */
 async function initGame() {
-    console.log('🏮 Initializing Echoes of the Lantern (Multiplayer)...');
+    console.log('🏮 Initializing Echoes of the Lantern...');
 
-    // Check if backend is configured when on GitHub Pages
-    if (API_CONFIG.isGitHubPages && !API_CONFIG.isConfigured) {
-        console.error('❌ Backend not configured!');
-        console.log('');
-        console.log('📝 To run this game:');
-        console.log('');
-        console.log('Option 1 - Run Locally:');
-        console.log('  1. Clone the repository');
-        console.log('  2. cd server && npm install');
-        console.log('  3. npm start');
-        console.log('  4. Open http://localhost:8080');
-        console.log('');
-        console.log('Option 2 - Deploy Backend:');
-        console.log('  1. Deploy the /server folder to Railway, Render, or similar');
-        console.log('  2. Update PRODUCTION_URL in src/core/config.js');
-        console.log('  3. Redeploy to GitHub Pages');
-        console.log('');
-
-        showBackendError();
-        return;
-    }
+    // Skip authentication - load game directly for single-player mode
+    console.log('🎮 Starting in single-player mode (no backend required)');
 
     // Get DOM elements
     cacheElements();
 
     // Setup event listeners
-    setupAuthListeners();
     setupGameListeners();
 
-    // Check if user is already logged in
-    const token = localStorage.getItem('auth_token');
-    if (token) {
-        try {
-            const result = await api.getMe();
-            if (result.success) {
-                await onLoginSuccess(result.user, token);
-            }
-        } catch (error) {
-            console.log('Token invalid, showing login screen');
-            showAuthScreen();
-        }
+    // Try to load saved game, or create new
+    let user = loadLocalGameState();
+    if (!user) {
+        user = {
+            id: 'guest',
+            username: 'Guest Player',
+            email: 'guest@local.game',
+            gold: 100,
+            day: 1,
+            account_level: 1,
+            heroes: []
+        };
+        console.log('🆕 Starting new game');
     } else {
-        showAuthScreen();
+        console.log('📂 Loaded saved game');
     }
+
+    // Hide auth container, show game
+    elements.authContainer.style.display = 'none';
+    elements.gameContainer.style.display = 'block';
+
+    // Initialize single-player mode (no socket connection)
+    currentUser = user;
+    elements.usernameDisplay.textContent = user.username;
+    elements.gold.textContent = user.gold;
+    elements.day.textContent = user.day;
+    elements.heroCount.textContent = user.heroes.length;
+
+    // Update UI
+    updateHeroesList(user.heroes);
+
+    // Load game data
+    await loadGameData();
+
+    // Initialize activity log
+    addLocalLog('Welcome to Echoes of the Lantern!', 'info');
+    addLocalLog('🎮 Playing in single-player mode', 'info');
+
+    console.log('✅ Game initialized in single-player mode');
 }
 
 /**
@@ -409,27 +413,150 @@ async function loadGameData() {
 }
 
 /**
- * Handle summon hero
+ * Handle summon hero (Single-player mode)
  */
 async function handleSummonHero() {
-    if (currentUser.gold < 50) {
+    const SUMMON_COST = 50;
+
+    if (currentUser.gold < SUMMON_COST) {
         alert('Not enough gold to summon a hero!');
         return;
     }
 
     try {
-        const result = await api.summonHero();
-        if (result.success) {
-            currentUser.gold = result.newGold;
-            currentUser.heroes.push(result.hero);
-            elements.gold.textContent = currentUser.gold;
-            elements.heroCount.textContent = currentUser.heroes.length;
-            updateHeroesList(currentUser.heroes);
-            updateActivityFeed();
+        // Load game data if not already loaded
+        if (!window.gameData) {
+            await loadGameData();
+        }
+
+        // Deduct gold
+        currentUser.gold -= SUMMON_COST;
+
+        // Generate random hero
+        const firstName = getRandomElement(window.gameData.heroNames.firstNames);
+        const lastName = getRandomElement(window.gameData.heroNames.lastNames);
+        const heroClass = getRandomElement(window.gameData.classes.classes);
+
+        const hero = {
+            id: generateId(),
+            name: `${firstName} ${lastName}`,
+            class: heroClass.id,
+            level: 1,
+            exp: 0,
+            exp_to_next: 100,
+            stats: {
+                strength: 10 + (heroClass.bonuses.strength || 0),
+                defense: 10 + (heroClass.bonuses.defense || 0),
+                health: 50 + (heroClass.bonuses.health || 0),
+                maxHealth: 50 + (heroClass.bonuses.health || 0),
+                intelligence: 10 + (heroClass.bonuses.intelligence || 0),
+                agility: 10 + (heroClass.bonuses.agility || 0),
+                wisdom: 10 + (heroClass.bonuses.wisdom || 0),
+                luck: 10 + (heroClass.bonuses.luck || 0),
+                classEmoji: heroClass.emoji
+            },
+            current_activity: null,
+            activity_start_time: null
+        };
+
+        // Add hero to list
+        currentUser.heroes.push(hero);
+
+        // Update UI
+        elements.gold.textContent = currentUser.gold;
+        elements.heroCount.textContent = currentUser.heroes.length;
+        updateHeroesList(currentUser.heroes);
+
+        // Add log entry
+        addLocalLog(`✨ ${hero.stats.classEmoji} ${hero.name} the ${heroClass.name} has arrived!`, 'success');
+
+        // Save to localStorage
+        saveLocalGameState();
+
+        console.log(`✅ Summoned ${hero.name}`);
+    } catch (error) {
+        console.error('Summon error:', error);
+        alert('Failed to summon hero: ' + error.message);
+    }
+}
+
+/**
+ * Load game data from JSON files
+ */
+async function loadGameData() {
+    try {
+        const [classesRes, namesRes, activitiesRes] = await Promise.all([
+            fetch('src/data/classes.json'),
+            fetch('src/data/heroNames.json'),
+            fetch('src/data/activities.json')
+        ]);
+
+        window.gameData = {
+            classes: await classesRes.json(),
+            heroNames: await namesRes.json(),
+            activities: await activitiesRes.json()
+        };
+
+        console.log('✅ Game data loaded');
+    } catch (error) {
+        console.error('Failed to load game data:', error);
+        throw error;
+    }
+}
+
+/**
+ * Get random element from array
+ */
+function getRandomElement(array) {
+    return array[Math.floor(Math.random() * array.length)];
+}
+
+/**
+ * Generate unique ID
+ */
+function generateId() {
+    return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+}
+
+/**
+ * Save game state to localStorage
+ */
+function saveLocalGameState() {
+    try {
+        const saveData = {
+            user: currentUser,
+            lastSaved: Date.now()
+        };
+        localStorage.setItem('echoes-of-lantern-local', JSON.stringify(saveData));
+    } catch (error) {
+        console.error('Failed to save:', error);
+    }
+}
+
+/**
+ * Load game state from localStorage
+ */
+function loadLocalGameState() {
+    try {
+        const saved = localStorage.getItem('echoes-of-lantern-local');
+        if (saved) {
+            const data = JSON.parse(saved);
+            return data.user;
         }
     } catch (error) {
-        alert(error.message || 'Failed to summon hero');
+        console.error('Failed to load save:', error);
     }
+    return null;
+}
+
+/**
+ * Add log entry (local only)
+ */
+function addLocalLog(message, type = 'info') {
+    if (!activityCache) activityCache = [];
+    activityCache.unshift({ message, type, timestamp: Date.now() });
+    if (activityCache.length > 50) activityCache = activityCache.slice(0, 50);
+    updateActivityFeed();
 }
 
 /**
@@ -475,24 +602,11 @@ function updateHeroesList(heroes) {
 }
 
 /**
- * Update activity feed
+ * Update activity feed (Single-player mode)
  */
 async function updateActivityFeed() {
-    try {
-        let activities;
-
-        if (currentFeedTab === 'global') {
-            const result = await api.getGlobalFeed();
-            activities = result.activities;
-        } else {
-            const result = await api.getUserFeed();
-            activities = result.activities;
-        }
-
-        displayActivities(activities);
-    } catch (error) {
-        console.error('Failed to update feed:', error);
-    }
+    // Use local activity cache
+    displayActivities(activityCache || []);
 }
 
 /**
