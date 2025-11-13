@@ -2,6 +2,7 @@
  * Multiplayer Client - Main game logic with real-time multiplayer
  */
 import { api } from './api.js';
+import { API_CONFIG } from './config.js';
 
 // Global state
 let socket = null;
@@ -17,6 +18,28 @@ const elements = {};
  */
 async function initGame() {
     console.log('🏮 Initializing Echoes of the Lantern (Multiplayer)...');
+
+    // Check if backend is configured when on GitHub Pages
+    if (API_CONFIG.isGitHubPages && !API_CONFIG.isConfigured) {
+        console.error('❌ Backend not configured!');
+        console.log('');
+        console.log('📝 To run this game:');
+        console.log('');
+        console.log('Option 1 - Run Locally:');
+        console.log('  1. Clone the repository');
+        console.log('  2. cd server && npm install');
+        console.log('  3. npm start');
+        console.log('  4. Open http://localhost:8080');
+        console.log('');
+        console.log('Option 2 - Deploy Backend:');
+        console.log('  1. Deploy the /server folder to Railway, Render, or similar');
+        console.log('  2. Update PRODUCTION_URL in src/core/config.js');
+        console.log('  3. Redeploy to GitHub Pages');
+        console.log('');
+
+        showBackendError();
+        return;
+    }
 
     // Get DOM elements
     cacheElements();
@@ -40,6 +63,50 @@ async function initGame() {
     } else {
         showAuthScreen();
     }
+}
+
+/**
+ * Show backend error message
+ */
+function showBackendError() {
+    document.getElementById('auth-container').innerHTML = `
+        <div class="auth-box" style="max-width: 600px;">
+            <h1>🏮 Echoes of the Lantern</h1>
+            <p class="subtitle">Passive MMORPG</p>
+
+            <div style="margin-top: 2rem; text-align: left; background: #FFF3CD; padding: 1.5rem; border-radius: 8px; border: 2px solid #FFC107;">
+                <h3 style="margin-top: 0; color: #856404;">⚠️ Backend Server Required</h3>
+                <p style="color: #856404; margin-bottom: 1rem;">This is a multiplayer game that requires a backend server to run.</p>
+
+                <div style="background: white; padding: 1rem; border-radius: 6px; margin-bottom: 1rem;">
+                    <h4 style="margin-top: 0;">🖥️ Option 1: Run Locally (Recommended)</h4>
+                    <ol style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                        <li>Clone this repository to your computer</li>
+                        <li>Open terminal in the project folder</li>
+                        <li>Run: <code style="background: #f4f4f4; padding: 2px 6px; border-radius: 3px;">cd server && npm install</code></li>
+                        <li>Run: <code style="background: #f4f4f4; padding: 2px 6px; border-radius: 3px;">npm start</code></li>
+                        <li>Open: <strong>http://localhost:8080</strong></li>
+                    </ol>
+                </div>
+
+                <div style="background: white; padding: 1rem; border-radius: 6px;">
+                    <h4 style="margin-top: 0;">☁️ Option 2: Deploy Backend Online</h4>
+                    <p style="margin: 0.5rem 0; font-size: 0.9rem;">To use GitHub Pages with this game:</p>
+                    <ol style="margin: 0.5rem 0; padding-left: 1.5rem; font-size: 0.9rem;">
+                        <li>Deploy the <code>/server</code> folder to Railway, Render, or Heroku</li>
+                        <li>Update <code>PRODUCTION_URL</code> in <code>src/core/config.js</code></li>
+                        <li>Push changes to GitHub</li>
+                    </ol>
+                </div>
+            </div>
+
+            <a href="https://github.com/${window.location.pathname.split('/')[1]}/animeworld"
+               class="btn btn-primary"
+               style="margin-top: 1.5rem; display: inline-block; text-decoration: none;">
+                📂 View on GitHub
+            </a>
+        </div>
+    `;
 }
 
 /**
@@ -278,7 +345,9 @@ async function onLoginSuccess(user, token, offlineProgress = null) {
  * Connect to Socket.io
  */
 function connectSocket(userId) {
-    socket = io('http://localhost:8080');
+    // Get base URL without /api suffix
+    const socketURL = API_CONFIG.API_URL.replace('/api', '');
+    socket = io(socketURL);
 
     socket.on('connect', () => {
         console.log('✅ Connected to server');

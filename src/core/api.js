@@ -2,11 +2,14 @@
  * API Client - Handles all backend communication
  */
 
-const API_URL = 'http://localhost:8080/api';
+import { API_CONFIG } from './config.js';
+
+const API_URL = API_CONFIG.API_URL;
 
 export class APIClient {
     constructor() {
         this.token = localStorage.getItem('auth_token');
+        this.baseURL = API_URL;
     }
 
     /**
@@ -38,18 +41,30 @@ export class APIClient {
             headers['Authorization'] = `Bearer ${this.token}`;
         }
 
-        const response = await fetch(`${API_URL}${endpoint}`, {
-            ...options,
-            headers
-        });
+        try {
+            const response = await fetch(`${API_URL}${endpoint}`, {
+                ...options,
+                headers
+            });
 
-        const data = await response.json();
+            const data = await response.json();
 
-        if (!response.ok) {
-            throw new Error(data.error || 'Request failed');
+            if (!response.ok) {
+                throw new Error(data.error || 'Request failed');
+            }
+
+            return data;
+        } catch (error) {
+            // Better error messages for common issues
+            if (error.message === 'Failed to fetch') {
+                if (API_CONFIG.isGitHubPages && !API_CONFIG.isConfigured) {
+                    throw new Error('Backend not configured. See console for instructions.');
+                } else {
+                    throw new Error('Cannot connect to server. Make sure the backend is running.');
+                }
+            }
+            throw error;
         }
-
-        return data;
     }
 
     /**
