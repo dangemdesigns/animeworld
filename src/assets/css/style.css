@@ -683,6 +683,81 @@ body {
     box-shadow: none;
 }
 
+/* Activity Buttons with Progress Bars */
+.activity-btn {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.activity-btn .btn-content {
+    position: relative;
+    z-index: 2;
+    display: block;
+}
+
+.activity-btn .progress-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.3) 0%, rgba(212, 175, 55, 0.5) 100%);
+    transition: width 0.1s linear;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.activity-btn.active {
+    background: linear-gradient(135deg, var(--accent-warm) 0%, #d9a48f 100%);
+    color: white;
+    border-color: var(--accent-warm);
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(232, 180, 160, 0.4);
+}
+
+.activity-btn.active .progress-bar {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.4) 100%);
+    animation: shimmer 2s infinite;
+}
+
+.activity-btn.queued {
+    background: linear-gradient(135deg, #FFE5B4 0%, #FFD700 100%);
+    border-color: var(--accent-gold);
+    font-weight: 600;
+    color: var(--text-primary);
+    box-shadow: 0 2px 8px rgba(212, 175, 55, 0.3);
+}
+
+.activity-btn.queued:hover {
+    background: linear-gradient(135deg, #FFD700 0%, #FFC700 100%);
+}
+
+.activity-btn:hover:not(.active) {
+    background: var(--accent-warm);
+    color: white;
+    transform: translateY(-2px);
+}
+
+@keyframes shimmer {
+    0% {
+        opacity: 0.6;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.6;
+    }
+}
+
+/* Next Activity Indicator */
+.next-activity {
+    margin-left: var(--spacing-xs);
+    color: var(--accent-gold);
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
 /* Grid Layout Updates for New Panels */
 @media (min-width: 969px) {
     .game-main {

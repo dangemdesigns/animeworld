@@ -6,6 +6,7 @@
 let currentUser = null;
 let activityCache = [];
 let heroTimers = {}; // Track active hero timers
+let progressInterval = null; // Track progress update interval
 
 // DOM Elements
 const elements = {};
@@ -75,7 +76,103 @@ async function initGame() {
     addLocalLog('Welcome to Echoes of the Lantern!', 'info');
     addLocalLog('🎮 Playing in single-player mode', 'info');
 
+    // Start auto-activity system
+    startAutoActivitySystem();
+
     console.log('✅ Game initialized in single-player mode');
+}
+
+/**
+ * Start auto-activity system for heroes
+ */
+function startAutoActivitySystem() {
+    // Auto-assign activities to idle heroes every 2 seconds
+    setInterval(() => {
+        if (!currentUser || !currentUser.heroes) return;
+
+        currentUser.heroes.forEach(hero => {
+            // If hero is idle and has no queued activity, assign random activity
+            if (!hero.current_activity && (!hero.activity_queue || hero.activity_queue.length === 0)) {
+                const randomActivity = selectRandomActivityForHero(hero);
+                if (randomActivity) {
+                    startHeroActivity(hero, randomActivity);
+                }
+            }
+        });
+    }, 2000);
+
+    // Update progress bars every 100ms for smooth animation
+    if (progressInterval) clearInterval(progressInterval);
+    progressInterval = setInterval(() => {
+        updateActivityProgress();
+    }, 100);
+}
+
+/**
+ * Select random activity for hero based on level and zone
+ */
+function selectRandomActivityForHero(hero) {
+    if (!window.gameData || !window.gameData.activities) return null;
+
+    const activities = window.gameData.activities.activities;
+    const availableActivities = activities.filter(activity => {
+        // If activity requires zone, check if hero has valid zone
+        if (activity.requiresZone) {
+            if (!hero.current_zone) return false;
+            const zone = getZoneById(hero.current_zone);
+            if (!zone || hero.level < zone.levelRequired) return false;
+        }
+        return true;
+    });
+
+    if (availableActivities.length === 0) return null;
+
+    // Weighted random selection (favor zone activities over training/rest)
+    const weights = availableActivities.map(a => {
+        if (a.requiresZone) return 3; // 3x more likely to do zone activities
+        if (a.id === 'rest') return 0.5; // Less likely to rest
+        return 1;
+    });
+
+    const totalWeight = weights.reduce((sum, w) => sum + w, 0);
+    let random = Math.random() * totalWeight;
+
+    for (let i = 0; i < availableActivities.length; i++) {
+        random -= weights[i];
+        if (random <= 0) {
+            return availableActivities[i].id;
+        }
+    }
+
+    return availableActivities[0].id;
+}
+
+/**
+ * Update activity progress for all heroes
+ */
+function updateActivityProgress() {
+    if (!currentUser || !currentUser.heroes) return;
+
+    let needsUpdate = false;
+    currentUser.heroes.forEach(hero => {
+        if (hero.current_activity && hero.activity_start_time) {
+            const activity = getActivityById(hero.current_activity);
+            if (!activity) return;
+
+            const elapsed = Date.now() - hero.activity_start_time;
+            const progress = Math.min((elapsed / activity.duration) * 100, 100);
+
+            // Store progress on hero object for UI
+            hero.activity_progress = progress;
+            needsUpdate = true;
+        } else {
+            hero.activity_progress = 0;
+        }
+    });
+
+    if (needsUpdate) {
+        updateHeroesProgressBars();
+    }
 }
 
 /**
@@ -292,18 +389,39 @@ function updateHeroesList(heroes) {
             return `<option value="${zoneId}" ${selected}>${zone.emoji} ${zone.name} (Lv ${zone.levelRequired}+)</option>`;
         }).join('');
 
-        // Generate activity buttons
+        // Get next queued activity
+        const nextQueuedActivity = hero.activity_queue && hero.activity_queue.length > 0
+            ? hero.activity_queue[0]
+            : null;
+
+        // Generate activity buttons with progress bars
         const activityButtons = window.gameData && window.gameData.activities
             ? window.gameData.activities.activities.map(activity => {
-                const disabled = hero.current_activity ? 'disabled' : '';
-                return `<button class="btn btn-sm" onclick="window.startActivity('${hero.id}', '${activity.id}')" ${disabled}>
-                    ${activity.emoji} ${activity.name}
-                </button>`;
+                const isActive = hero.current_activity === activity.id;
+                const isQueued = nextQueuedActivity === activity.id;
+                const progress = isActive ? (hero.activity_progress || 0) : 0;
+
+                let btnClass = 'btn btn-sm activity-btn';
+                if (isActive) btnClass += ' active';
+                if (isQueued) btnClass += ' queued';
+
+                return `
+                    <button class="${btnClass}"
+                            onclick="window.queueActivity('${hero.id}', '${activity.id}')"
+                            data-hero-id="${hero.id}"
+                            data-activity-id="${activity.id}">
+                        <span class="btn-content">
+                            ${activity.emoji} ${activity.name}
+                            ${isQueued ? ' ⭐' : ''}
+                        </span>
+                        <div class="progress-bar" style="width: ${progress}%"></div>
+                    </button>
+                `;
             }).join('')
             : '';
 
         return `
-            <div class="hero-card">
+            <div class="hero-card" data-hero-id="${hero.id}">
                 <h3>${stats.classEmoji} ${hero.name} - Lv ${hero.level}</h3>
                 <div class="hero-stats">
                     <div class="hero-stat">
@@ -325,10 +443,11 @@ function updateHeroesList(heroes) {
                 </div>
                 <div class="hero-activity">
                     <strong>Status:</strong> ${activityText}
+                    ${nextQueuedActivity ? `<span class="next-activity">→ Next: ${getActivityById(nextQueuedActivity)?.emoji || ''}</span>` : ''}
                 </div>
                 <div class="hero-zone">
                     <label for="zone-${hero.id}"><strong>Zone:</strong></label>
-                    <select id="zone-${hero.id}" onchange="window.changeHeroZone('${hero.id}', this.value)" ${hero.current_activity ? 'disabled' : ''}>
+                    <select id="zone-${hero.id}" onchange="window.changeHeroZone('${hero.id}', this.value)">
                         ${zoneOptions}
                     </select>
                 </div>
@@ -342,6 +461,46 @@ function updateHeroesList(heroes) {
     // Update stats display
     elements.gold.textContent = currentUser.gold;
     elements.heroCount.textContent = currentUser.heroes.length;
+}
+
+/**
+ * Update hero progress bars without full re-render
+ */
+function updateHeroesProgressBars() {
+    if (!currentUser || !currentUser.heroes) return;
+
+    currentUser.heroes.forEach(hero => {
+        const heroCard = document.querySelector(`[data-hero-id="${hero.id}"]`);
+        if (!heroCard) return;
+
+        // Update all activity buttons
+        const activityButtons = heroCard.querySelectorAll('.activity-btn');
+        activityButtons.forEach(button => {
+            const activityId = button.getAttribute('data-activity-id');
+            const progressBar = button.querySelector('.progress-bar');
+
+            if (hero.current_activity === activityId) {
+                button.classList.add('active');
+                button.classList.remove('queued');
+                if (progressBar) {
+                    progressBar.style.width = `${hero.activity_progress || 0}%`;
+                }
+            } else {
+                button.classList.remove('active');
+                if (progressBar) {
+                    progressBar.style.width = '0%';
+                }
+
+                // Check if queued
+                const isQueued = hero.activity_queue && hero.activity_queue[0] === activityId;
+                if (isQueued) {
+                    button.classList.add('queued');
+                } else {
+                    button.classList.remove('queued');
+                }
+            }
+        });
+    });
 }
 
 /**
@@ -724,15 +883,46 @@ function checkZoneUnlocks() {
 }
 
 /**
- * Global helper: Start activity for a hero
+ * Global helper: Queue activity for a hero (priority system)
  */
-window.startActivity = function(heroId, activityId) {
+window.queueActivity = function(heroId, activityId) {
     const hero = currentUser.heroes.find(h => h.id === heroId);
     if (!hero) {
         console.error('Hero not found:', heroId);
         return;
     }
-    startHeroActivity(hero, activityId);
+
+    const activity = getActivityById(activityId);
+    if (!activity) {
+        console.error('Activity not found:', activityId);
+        return;
+    }
+
+    // Initialize queue if needed
+    if (!hero.activity_queue) hero.activity_queue = [];
+
+    // If clicking current activity, do nothing (it's already running)
+    if (hero.current_activity === activityId) {
+        addLocalLog(`${hero.name} is already doing ${activity.emoji} ${activity.name}!`, 'info');
+        return;
+    }
+
+    // If clicking queued activity, remove it from queue
+    const queueIndex = hero.activity_queue.indexOf(activityId);
+    if (queueIndex !== -1) {
+        hero.activity_queue.splice(queueIndex, 1);
+        addLocalLog(`🔄 Removed ${activity.emoji} ${activity.name} from ${hero.name}'s queue`, 'info');
+        updateHeroesList(currentUser.heroes);
+        saveLocalGameState();
+        return;
+    }
+
+    // Add to queue (replace if queue already has something)
+    hero.activity_queue = [activityId];
+    addLocalLog(`⭐ ${hero.name} will do ${activity.emoji} ${activity.name} next!`, 'success');
+
+    updateHeroesList(currentUser.heroes);
+    saveLocalGameState();
 };
 
 /**
