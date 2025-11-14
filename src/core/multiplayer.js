@@ -83,6 +83,7 @@ async function initGame() {
 
     // NOW update UI after game data is loaded
     updateHeroesList(user.heroes);
+    updateGuildHallList();
     updateZonesDisplay();
     updateMaterialsDisplay();
 
@@ -206,6 +207,7 @@ function cacheElements() {
     elements.guildHallCount = document.getElementById('guild-hall-count');
     elements.soulEssence = document.getElementById('soul-essence');
     elements.heroesList = document.getElementById('heroes-list');
+    elements.guildHallList = document.getElementById('guild-hall-list');
     elements.activityLog = document.getElementById('activity-log');
     elements.zonesList = document.getElementById('zones-list');
     elements.materialsList = document.getElementById('materials-list');
@@ -907,12 +909,15 @@ function updateHeroesList(heroes) {
                     ${activityButtons}
                 </div>
                 <div class="hero-awakening" style="margin-top: var(--spacing-sm); padding: var(--spacing-xs); background: rgba(255, 215, 0, 0.1); border-radius: 4px;">
-                    <button class="btn btn-sm" style="width: 100%;" onclick="window.awakenHero('${hero.id}')">
+                    <button class="btn btn-sm" style="width: 100%; margin-bottom: 0.25rem;" onclick="window.awakenHero('${hero.id}')">
                         ⭐ Awaken (Tier ${hero.awakeningTier}/4)
                     </button>
-                    <div style="font-size: 0.7rem; color: var(--text-secondary); text-align: center; margin-top: 0.25rem;">
+                    <div style="font-size: 0.7rem; color: var(--text-secondary); text-align: center; margin-bottom: 0.5rem;">
                         ${getDuplicateCount(hero.name)} duplicates available
                     </div>
+                    <button class="btn btn-sm" style="width: 100%; background: var(--text-secondary);" onclick="window.moveToStorage('${hero.id}')">
+                        ⬇️ Move to Storage
+                    </button>
                 </div>
             </div>
         `;
@@ -965,6 +970,82 @@ function updateHeroesProgressBars() {
             }
         });
     });
+}
+
+/**
+ * Update Guild Hall list (storage heroes)
+ */
+function updateGuildHallList() {
+    if (!currentUser || !currentUser.guildHall) {
+        elements.guildHallList.innerHTML = '<p class="empty-message">No heroes in storage yet.</p>';
+        return;
+    }
+
+    if (currentUser.guildHall.length === 0) {
+        elements.guildHallList.innerHTML = '<p class="empty-message">No heroes in storage yet.</p>';
+        return;
+    }
+
+    try {
+        elements.guildHallList.innerHTML = currentUser.guildHall.map(hero => {
+            const stats = hero.stats || {};
+            const heroClass = window.gameData?.classes?.classes?.find(c => c.id === hero.class);
+            const personality = getPersonalityById(hero.personality);
+
+            const rarityClass = `rarity-${hero.rarity}`;
+            const awakeningTier = hero.awakeningTier || 1;
+            const rarityStars = '⭐'.repeat(awakeningTier);
+
+            return `
+                <div class="hero-card ${rarityClass}" data-hero-id="${hero.id}">
+                    <div class="hero-header">
+                        <h3>
+                            ${stats.classEmoji} ${hero.name} ${rarityStars}
+                            <span class="hero-level">Lv ${hero.level}</span>
+                        </h3>
+                        <div class="hero-meta">
+                            <span class="hero-rarity">${hero.rarity.toUpperCase()}</span>
+                            <span class="hero-personality">${personality ? personality.emoji : ''} ${personality ? personality.name : ''}</span>
+                        </div>
+                        <div class="hero-class">
+                            ${heroClass ? heroClass.name : ''}
+                        </div>
+                    </div>
+
+                    <div class="hero-stats">
+                        <div class="hero-stat">
+                            <span>⚔️ STR:</span>
+                            <span>${stats.strength}</span>
+                        </div>
+                        <div class="hero-stat">
+                            <span>🛡️ DEF:</span>
+                            <span>${stats.defense}</span>
+                        </div>
+                        <div class="hero-stat">
+                            <span>❤️ HP:</span>
+                            <span>${stats.health}/${stats.maxHealth}</span>
+                        </div>
+                        <div class="hero-stat">
+                            <span>✨ EXP:</span>
+                            <span>${hero.exp}/${hero.exp_to_next}</span>
+                        </div>
+                    </div>
+
+                    <div class="hero-actions" style="margin-top: var(--spacing-sm); display: flex; gap: var(--spacing-xs);">
+                        <button class="btn btn-sm" style="flex: 1;" onclick="window.moveToActiveRoster('${hero.id}')" ${currentUser.heroes.length >= currentUser.activeHeroSlots ? 'disabled' : ''}>
+                            ⬆️ Move to Active
+                        </button>
+                        <button class="btn btn-sm" style="flex: 1; background: var(--accent-gold);" onclick="window.convertToEssence('${hero.id}')">
+                            ✨ Convert (${hero.rarity === 'legendary' ? '100' : hero.rarity === 'epic' ? '50' : hero.rarity === 'rare' ? '20' : hero.rarity === 'uncommon' ? '5' : '1'} SE)
+                        </button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    } catch (error) {
+        console.error('Error updating Guild Hall list:', error);
+        elements.guildHallList.innerHTML = '<p class="empty-message error">Error loading Guild Hall. Please refresh the page.</p>';
+    }
 }
 
 /**
@@ -1180,6 +1261,13 @@ function startHeroActivity(hero, activityId) {
     const zone = hero.current_zone ? getZoneById(hero.current_zone) : null;
     const zoneText = zone ? ` in ${zone.emoji} ${zone.name}` : '';
     addLocalLog(`🎯 ${hero.name} started ${activity.emoji} ${activity.name}${zoneText}`, 'info');
+
+    // Add personality dialogue for activity start
+    const personality = getPersonalityById(hero.personality);
+    if (personality && personality.dialogues && personality.dialogues.activity_start) {
+        const dialogue = getRandomElement(personality.dialogues.activity_start);
+        addLocalLog(`${personality.emoji} ${hero.name}: "${dialogue}"`, 'info');
+    }
 }
 
 /**
@@ -1213,6 +1301,32 @@ function completeHeroActivity(hero) {
         materialsGathered = gatherMaterialsForHero(hero, activity, 1);
     }
 
+    // Check for story event encounter (5% chance)
+    let encounterEvent = null;
+    if (zone && Math.random() < 0.05) {
+        encounterEvent = triggerStoryEncounter(hero, zone);
+        if (encounterEvent) {
+            // Add encounter rewards
+            if (encounterEvent.reward.gold) {
+                goldReward += encounterEvent.reward.gold;
+                currentUser.gold += encounterEvent.reward.gold;
+            }
+            if (encounterEvent.reward.exp) {
+                expReward += encounterEvent.reward.exp;
+                hero.exp += encounterEvent.reward.exp;
+            }
+            if (encounterEvent.reward.material) {
+                addMaterial(encounterEvent.reward.material, 1);
+                materialsGathered.push({
+                    id: encounterEvent.reward.material,
+                    name: getMaterialById(encounterEvent.reward.material)?.name || encounterEvent.reward.material,
+                    emoji: getMaterialById(encounterEvent.reward.material)?.emoji || '💎',
+                    amount: 1
+                });
+            }
+        }
+    }
+
     // Check for level up
     const leveledUp = checkHeroLevelUp(hero);
 
@@ -1235,8 +1349,39 @@ function completeHeroActivity(hero) {
 
     addLocalLog(message, 'success');
 
+    // Display story encounter if it occurred
+    if (encounterEvent) {
+        const rarityEmoji = {
+            common: '✨',
+            uncommon: '⭐',
+            rare: '🌟',
+            epic: '💫',
+            legendary: '🔥',
+            mythical: '⚡'
+        };
+        addLocalLog(
+            `${rarityEmoji[encounterEvent.rarity] || '✨'} ${encounterEvent.title}`,
+            encounterEvent.rarity === 'legendary' || encounterEvent.rarity === 'mythical' ? 'success' : 'info'
+        );
+        addLocalLog(encounterEvent.story, 'info');
+    }
+
+    // Add personality dialogue for activity completion
+    const personality = getPersonalityById(hero.personality);
+    if (personality && personality.dialogues && personality.dialogues.activity_complete) {
+        const dialogue = getRandomElement(personality.dialogues.activity_complete);
+        addLocalLog(`${personality.emoji} ${hero.name}: "${dialogue}"`, 'info');
+    }
+
     if (leveledUp) {
         addLocalLog(`⭐ ${hero.name} reached Level ${hero.level}!`, 'success');
+
+        // Add personality dialogue for level up
+        if (personality && personality.dialogues && personality.dialogues.level_up) {
+            const dialogue = getRandomElement(personality.dialogues.level_up);
+            addLocalLog(`${personality.emoji} ${hero.name}: "${dialogue}"`, 'success');
+        }
+
         checkZoneUnlocks();
     }
 
@@ -1499,6 +1644,144 @@ window.rerollClass = function(heroId) {
 
     addLocalLog(`🔄 ${hero.name} changed from ${oldClass.name} to ${newClass.name}!`, 'success');
     updateHeroesList(currentUser.heroes);
+    updateUIDisplays();
+    saveLocalGameState();
+};
+
+/**
+ * Trigger story encounter for hero in zone
+ */
+function triggerStoryEncounter(hero, zone) {
+    if (!window.gameData || !window.gameData.storyEvents) return null;
+
+    const encounters = window.gameData.storyEvents.encounters[zone.id];
+    if (!encounters || encounters.length === 0) return null;
+
+    // Weight encounters by rarity (rarer = less likely)
+    const rarityWeights = {
+        common: 50,
+        uncommon: 30,
+        rare: 15,
+        epic: 4,
+        legendary: 0.9,
+        mythical: 0.1
+    };
+
+    // Filter and weight encounters
+    const weightedEncounters = [];
+    encounters.forEach(encounter => {
+        const weight = rarityWeights[encounter.rarity] || 10;
+        weightedEncounters.push({ encounter, weight });
+    });
+
+    // Select random encounter based on weights
+    const totalWeight = weightedEncounters.reduce((sum, item) => sum + item.weight, 0);
+    let random = Math.random() * totalWeight;
+
+    for (const item of weightedEncounters) {
+        random -= item.weight;
+        if (random <= 0) {
+            // Replace {hero} placeholder with hero name
+            const story = item.encounter.story.replace(/{hero}/g, hero.name);
+            return {
+                ...item.encounter,
+                story: story
+            };
+        }
+    }
+
+    return null;
+}
+
+/**
+ * Global helper: Move hero from Guild Hall to active roster
+ */
+window.moveToActiveRoster = function(heroId) {
+    const heroIndex = currentUser.guildHall.findIndex(h => h.id === heroId);
+    if (heroIndex === -1) {
+        alert('Hero not found in Guild Hall!');
+        return;
+    }
+
+    if (currentUser.heroes.length >= currentUser.activeHeroSlots) {
+        alert(`Active roster is full! (${currentUser.activeHeroSlots} slots)`);
+        return;
+    }
+
+    const hero = currentUser.guildHall.splice(heroIndex, 1)[0];
+    currentUser.heroes.push(hero);
+
+    addLocalLog(`⬆️ ${hero.name} moved to active roster!`, 'success');
+    updateHeroesList(currentUser.heroes);
+    updateGuildHallList();
+    updateUIDisplays();
+    saveLocalGameState();
+};
+
+/**
+ * Global helper: Move hero from active roster to Guild Hall
+ */
+window.moveToStorage = function(heroId) {
+    const heroIndex = currentUser.heroes.findIndex(h => h.id === heroId);
+    if (heroIndex === -1) {
+        alert('Hero not found in active roster!');
+        return;
+    }
+
+    const hero = currentUser.heroes[heroIndex];
+
+    // Check if hero has active activity
+    if (hero.current_activity) {
+        alert(`${hero.name} is currently doing an activity! Wait for them to finish first.`);
+        return;
+    }
+
+    currentUser.heroes.splice(heroIndex, 1);
+    currentUser.guildHall.push(hero);
+
+    addLocalLog(`⬇️ ${hero.name} moved to Guild Hall storage!`, 'info');
+    updateHeroesList(currentUser.heroes);
+    updateGuildHallList();
+    updateUIDisplays();
+    saveLocalGameState();
+};
+
+/**
+ * Global helper: Convert hero to Soul Essence
+ */
+window.convertToEssence = function(heroId) {
+    const heroIndex = currentUser.guildHall.findIndex(h => h.id === heroId);
+    if (heroIndex === -1) {
+        alert('Hero not found in Guild Hall!');
+        return;
+    }
+
+    const hero = currentUser.guildHall[heroIndex];
+
+    // Calculate Soul Essence based on rarity
+    const essenceValues = {
+        common: 1,
+        uncommon: 5,
+        rare: 20,
+        epic: 50,
+        legendary: 100,
+        mythical: 500
+    };
+    const essenceGain = essenceValues[hero.rarity] || 1;
+
+    const confirm = window.confirm(
+        `Convert ${hero.name} (${hero.rarity.toUpperCase()}) to Soul Essence?\n\n` +
+        `You will receive: ${essenceGain} Soul Essence\n\n` +
+        `This action cannot be undone!`
+    );
+
+    if (!confirm) return;
+
+    currentUser.guildHall.splice(heroIndex, 1);
+    currentUser.soulEssence += essenceGain;
+
+    addLocalLog(`✨ Converted ${hero.name} to ${essenceGain} Soul Essence!`, 'success');
+    updateGuildHallList();
     updateUIDisplays();
     saveLocalGameState();
 };
