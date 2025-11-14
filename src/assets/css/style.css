@@ -512,3 +512,188 @@ body {
         padding: var(--spacing-md);
     }
 }
+
+/* ==========================================
+   New Features: Zones, Materials, Activities
+   ========================================== */
+
+/* Zones List */
+.zones-list {
+    display: grid;
+    gap: var(--spacing-sm);
+}
+
+.zone-card {
+    background: linear-gradient(135deg, var(--bg-secondary) 0%, #F0E6DA 100%);
+    border-radius: var(--radius-sm);
+    padding: var(--spacing-sm);
+    border-left: 4px solid var(--accent-gold);
+    transition: all 0.3s ease;
+}
+
+.zone-card:hover {
+    transform: translateX(4px);
+    box-shadow: 0 4px 12px var(--shadow);
+}
+
+.zone-card.zone-locked {
+    opacity: 0.6;
+    border-left-color: var(--text-secondary);
+}
+
+.zone-card h3 {
+    font-size: 1.1rem;
+    margin-bottom: var(--spacing-xs);
+    color: var(--text-primary);
+}
+
+.zone-level {
+    font-size: 0.85rem;
+    color: var(--accent-gold);
+    font-weight: 600;
+    margin-bottom: var(--spacing-xs);
+}
+
+.zone-desc {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-xs);
+    font-style: italic;
+}
+
+.zone-materials {
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    margin-top: var(--spacing-xs);
+}
+
+.zone-locked-text {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    text-align: center;
+    padding: var(--spacing-xs);
+}
+
+/* Materials List */
+.materials-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: var(--spacing-xs);
+}
+
+.material-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    background: var(--bg-secondary);
+    border-radius: var(--radius-sm);
+    padding: var(--spacing-xs);
+    border-left: 3px solid var(--border-light);
+}
+
+.material-item.rarity-common {
+    border-left-color: #A0A0A0;
+}
+
+.material-item.rarity-uncommon {
+    border-left-color: #6BBE6B;
+}
+
+.material-item.rarity-rare {
+    border-left-color: #6BA3FF;
+}
+
+.material-item.rarity-legendary {
+    border-left-color: #FFD700;
+}
+
+.material-emoji {
+    font-size: 1.5rem;
+}
+
+.material-name {
+    flex: 1;
+    font-size: 0.85rem;
+    color: var(--text-primary);
+}
+
+.material-amount {
+    font-weight: 700;
+    color: var(--accent-gold);
+    font-size: 0.9rem;
+}
+
+/* Hero Card Enhancements */
+.hero-zone {
+    margin-top: var(--spacing-sm);
+    padding: var(--spacing-xs);
+    background: white;
+    border-radius: var(--radius-sm);
+}
+
+.hero-zone label {
+    display: block;
+    font-size: 0.85rem;
+    margin-bottom: 0.25rem;
+    color: var(--text-secondary);
+}
+
+.hero-zone select {
+    width: 100%;
+    padding: var(--spacing-xs);
+    border: 2px solid var(--border-light);
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+    background: white;
+    color: var(--text-primary);
+    cursor: pointer;
+}
+
+.hero-zone select:focus {
+    outline: none;
+    border-color: var(--accent-warm);
+}
+
+.hero-zone select:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+    margin-top: var(--spacing-sm);
+}
+
+.btn-sm {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.75rem;
+    white-space: nowrap;
+}
+
+.btn-sm:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn-sm:disabled:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+/* Grid Layout Updates for New Panels */
+@media (min-width: 969px) {
+    .game-main {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .heroes-panel {
+        grid-column: span 2;
+    }
+
+    .log-panel-global {
+        grid-column: span 3;
+    }
+}

@@ -1,0 +1,94 @@
+{
+  "zones": [
+    {
+      "id": "whispering_woods",
+      "name": "Whispering Woods",
+      "emoji": "🌲",
+      "levelRequired": 1,
+      "description": "A peaceful forest filled with ancient trees and gentle spirits. Perfect for beginners.",
+      "difficulty": 1.0,
+      "materials": ["wood", "herbs", "common_essence"],
+      "goldMultiplier": 1.0,
+      "expMultiplier": 1.0,
+      "stories": [
+        "discovered a hidden grove",
+        "encountered a friendly forest spirit",
+        "found a clearing with glowing mushrooms",
+        "heard whispers from the ancient trees",
+        "helped a lost traveler find their way"
+      ]
+    },
+    {
+      "id": "jade_mountains",
+      "name": "Jade Mountains",
+      "emoji": "⛰️",
+      "levelRequired": 6,
+      "description": "Towering peaks shrouded in mist, home to rare minerals and mysterious monks.",
+      "difficulty": 1.5,
+      "materials": ["stone", "jade", "iron_ore", "uncommon_essence"],
+      "goldMultiplier": 1.5,
+      "expMultiplier": 1.3,
+      "stories": [
+        "climbed to a breathtaking summit",
+        "discovered a hidden monastery",
+        "found veins of precious jade",
+        "meditated with ancient monks",
+        "witnessed a dragon soaring above the peaks"
+      ]
+    },
+    {
+      "id": "azure_coast",
+      "name": "Azure Coast",
+      "emoji": "🌊",
+      "levelRequired": 11,
+      "description": "Sparkling beaches and mysterious tide pools. The sea holds many secrets.",
+      "difficulty": 2.0,
+      "materials": ["coral", "pearls", "sea_glass", "water_essence"],
+      "goldMultiplier": 2.0,
+      "expMultiplier": 1.6,
+      "stories": [
+        "dove into an underwater cave",
+        "befriended a sea turtle",
+        "discovered a sunken treasure",
+        "witnessed a whale migration",
+        "found a message in a bottle from ages past"
+      ]
+    },
+    {
+      "id": "crimson_desert",
+      "name": "Crimson Desert",
+      "emoji": "🏜️",
+      "levelRequired": 16,
+      "description": "Endless red sands and scorching heat. Only the strong survive here.",
+      "difficulty": 2.5,
+      "materials": ["desert_glass", "gold_dust", "ancient_coins", "fire_essence"],
+      "goldMultiplier": 2.5,
+      "expMultiplier": 2.0,
+      "stories": [
+        "uncovered ancient ruins buried in sand",
+        "survived a sandstorm by taking shelter in a cave",
+        "found an oasis in the endless dunes",
+        "encountered a nomadic caravan",
+        "discovered hieroglyphs telling of a lost civilization"
+      ]
+    },
+    {
+      "id": "shadow_realm",
+      "name": "Shadow Realm",
+      "emoji": "🌑",
+      "levelRequired": 25,
+      "description": "A dark dimension where light struggles to exist. The most dangerous zone.",
+      "difficulty": 3.5,
+      "materials": ["shadow_crystal", "void_essence", "dark_matter", "legendary_essence"],
+      "goldMultiplier": 4.0,
+      "expMultiplier": 3.0,
+      "stories": [
+        "battled a shadow wraith and emerged victorious",
+        "found a rift between dimensions",
+        "discovered an ancient seal containing great power",
+        "resisted the whispers of the void",
+        "lit a lantern that pushed back the eternal darkness"
+      ]
+    }
+  ]
+}

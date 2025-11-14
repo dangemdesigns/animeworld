@@ -1,0 +1,156 @@
+{
+  "materials": [
+    {
+      "id": "wood",
+      "name": "Wood",
+      "emoji": "🪵",
+      "rarity": "common",
+      "description": "Sturdy timber from ancient trees",
+      "sellPrice": 2
+    },
+    {
+      "id": "herbs",
+      "name": "Herbs",
+      "emoji": "🌿",
+      "rarity": "common",
+      "description": "Medicinal plants with healing properties",
+      "sellPrice": 3
+    },
+    {
+      "id": "stone",
+      "name": "Stone",
+      "emoji": "🪨",
+      "rarity": "common",
+      "description": "Rough stone for construction",
+      "sellPrice": 2
+    },
+    {
+      "id": "common_essence",
+      "name": "Common Essence",
+      "emoji": "✨",
+      "rarity": "common",
+      "description": "Basic magical energy",
+      "sellPrice": 5
+    },
+    {
+      "id": "jade",
+      "name": "Jade",
+      "emoji": "💚",
+      "rarity": "uncommon",
+      "description": "Precious green stone from the mountains",
+      "sellPrice": 15
+    },
+    {
+      "id": "iron_ore",
+      "name": "Iron Ore",
+      "emoji": "⛏️",
+      "rarity": "uncommon",
+      "description": "Raw iron ready for smelting",
+      "sellPrice": 12
+    },
+    {
+      "id": "uncommon_essence",
+      "name": "Uncommon Essence",
+      "emoji": "💫",
+      "rarity": "uncommon",
+      "description": "Enhanced magical energy",
+      "sellPrice": 20
+    },
+    {
+      "id": "coral",
+      "name": "Coral",
+      "emoji": "🪸",
+      "rarity": "uncommon",
+      "description": "Beautiful coral from the deep sea",
+      "sellPrice": 18
+    },
+    {
+      "id": "pearls",
+      "name": "Pearls",
+      "emoji": "🦪",
+      "rarity": "rare",
+      "description": "Lustrous pearls from giant oysters",
+      "sellPrice": 35
+    },
+    {
+      "id": "sea_glass",
+      "name": "Sea Glass",
+      "emoji": "💎",
+      "rarity": "uncommon",
+      "description": "Smooth glass polished by ocean waves",
+      "sellPrice": 22
+    },
+    {
+      "id": "water_essence",
+      "name": "Water Essence",
+      "emoji": "💧",
+      "rarity": "rare",
+      "description": "Pure essence of the ocean",
+      "sellPrice": 40
+    },
+    {
+      "id": "desert_glass",
+      "name": "Desert Glass",
+      "emoji": "🔆",
+      "rarity": "rare",
+      "description": "Glass formed by lightning strikes in sand",
+      "sellPrice": 45
+    },
+    {
+      "id": "gold_dust",
+      "name": "Gold Dust",
+      "emoji": "✨",
+      "rarity": "rare",
+      "description": "Shimmering particles of pure gold",
+      "sellPrice": 50
+    },
+    {
+      "id": "ancient_coins",
+      "name": "Ancient Coins",
+      "emoji": "🪙",
+      "rarity": "rare",
+      "description": "Currency from a lost civilization",
+      "sellPrice": 55
+    },
+    {
+      "id": "fire_essence",
+      "name": "Fire Essence",
+      "emoji": "🔥",
+      "rarity": "rare",
+      "description": "Burning energy from the desert heat",
+      "sellPrice": 60
+    },
+    {
+      "id": "shadow_crystal",
+      "name": "Shadow Crystal",
+      "emoji": "🔮",
+      "rarity": "legendary",
+      "description": "Crystallized darkness from the void",
+      "sellPrice": 120
+    },
+    {
+      "id": "void_essence",
+      "name": "Void Essence",
+      "emoji": "⚫",
+      "rarity": "legendary",
+      "description": "Pure essence of nothingness",
+      "sellPrice": 150
+    },
+    {
+      "id": "dark_matter",
+      "name": "Dark Matter",
+      "emoji": "🌌",
+      "rarity": "legendary",
+      "description": "Mysterious substance from between dimensions",
+      "sellPrice": 180
+    },
+    {
+      "id": "legendary_essence",
+      "name": "Legendary Essence",
+      "emoji": "⭐",
+      "rarity": "legendary",
+      "description": "The rarest form of magical energy",
+      "sellPrice": 200
+    }
+  ]
+}

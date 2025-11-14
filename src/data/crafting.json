@@ -1,0 +1,226 @@
+{
+  "recipes": [
+    {
+      "id": "wooden_sword",
+      "name": "Wooden Sword",
+      "emoji": "🗡️",
+      "type": "weapon",
+      "tier": 1,
+      "craftTime": 30000,
+      "materials": {
+        "wood": 10,
+        "common_essence": 2
+      },
+      "bonuses": {
+        "strength": 5,
+        "attack": 3
+      },
+      "description": "A simple sword carved from sturdy wood"
+    },
+    {
+      "id": "iron_blade",
+      "name": "Iron Blade",
+      "emoji": "⚔️",
+      "type": "weapon",
+      "tier": 2,
+      "craftTime": 60000,
+      "materials": {
+        "iron_ore": 15,
+        "wood": 5,
+        "uncommon_essence": 3
+      },
+      "bonuses": {
+        "strength": 12,
+        "attack": 8
+      },
+      "description": "A well-forged iron sword"
+    },
+    {
+      "id": "jade_katana",
+      "name": "Jade Katana",
+      "emoji": "🗡️",
+      "type": "weapon",
+      "tier": 3,
+      "craftTime": 120000,
+      "materials": {
+        "jade": 20,
+        "iron_ore": 10,
+        "water_essence": 5
+      },
+      "bonuses": {
+        "strength": 20,
+        "attack": 15,
+        "agility": 5
+      },
+      "description": "An elegant blade infused with jade power"
+    },
+    {
+      "id": "shadow_reaper",
+      "name": "Shadow Reaper",
+      "emoji": "🗡️",
+      "type": "weapon",
+      "tier": 4,
+      "craftTime": 300000,
+      "materials": {
+        "shadow_crystal": 10,
+        "void_essence": 8,
+        "dark_matter": 5
+      },
+      "bonuses": {
+        "strength": 40,
+        "attack": 30,
+        "agility": 15
+      },
+      "description": "A blade forged from pure darkness"
+    },
+    {
+      "id": "leather_vest",
+      "name": "Leather Vest",
+      "emoji": "🦺",
+      "type": "armor",
+      "tier": 1,
+      "craftTime": 40000,
+      "materials": {
+        "herbs": 15,
+        "wood": 8,
+        "common_essence": 3
+      },
+      "bonuses": {
+        "defense": 8,
+        "health": 15
+      },
+      "description": "Basic protection from lightweight leather"
+    },
+    {
+      "id": "iron_armor",
+      "name": "Iron Armor",
+      "emoji": "🛡️",
+      "type": "armor",
+      "tier": 2,
+      "craftTime": 90000,
+      "materials": {
+        "iron_ore": 25,
+        "stone": 15,
+        "uncommon_essence": 5
+      },
+      "bonuses": {
+        "defense": 18,
+        "health": 35
+      },
+      "description": "Sturdy iron plating for protection"
+    },
+    {
+      "id": "jade_guardian",
+      "name": "Jade Guardian Armor",
+      "emoji": "🛡️",
+      "type": "armor",
+      "tier": 3,
+      "craftTime": 150000,
+      "materials": {
+        "jade": 30,
+        "iron_ore": 20,
+        "water_essence": 8
+      },
+      "bonuses": {
+        "defense": 30,
+        "health": 60,
+        "wisdom": 10
+      },
+      "description": "Mystical armor blessed by mountain spirits"
+    },
+    {
+      "id": "void_plate",
+      "name": "Void Plate",
+      "emoji": "🛡️",
+      "type": "armor",
+      "tier": 4,
+      "craftTime": 360000,
+      "materials": {
+        "shadow_crystal": 15,
+        "void_essence": 12,
+        "dark_matter": 8
+      },
+      "bonuses": {
+        "defense": 55,
+        "health": 100,
+        "wisdom": 20
+      },
+      "description": "Armor that absorbs light itself"
+    },
+    {
+      "id": "crystal_amulet",
+      "name": "Crystal Amulet",
+      "emoji": "📿",
+      "type": "accessory",
+      "tier": 1,
+      "craftTime": 20000,
+      "materials": {
+        "common_essence": 5,
+        "herbs": 10
+      },
+      "bonuses": {
+        "wisdom": 5,
+        "mana": 10
+      },
+      "description": "A simple charm that enhances magical ability"
+    },
+    {
+      "id": "sea_pearl_ring",
+      "name": "Sea Pearl Ring",
+      "emoji": "💍",
+      "type": "accessory",
+      "tier": 2,
+      "craftTime": 80000,
+      "materials": {
+        "pearls": 10,
+        "sea_glass": 8,
+        "water_essence": 4
+      },
+      "bonuses": {
+        "wisdom": 12,
+        "mana": 25,
+        "agility": 5
+      },
+      "description": "A ring containing the ocean's power"
+    },
+    {
+      "id": "desert_crown",
+      "name": "Crown of the Desert",
+      "emoji": "👑",
+      "type": "accessory",
+      "tier": 3,
+      "craftTime": 180000,
+      "materials": {
+        "ancient_coins": 15,
+        "gold_dust": 20,
+        "fire_essence": 10
+      },
+      "bonuses": {
+        "wisdom": 25,
+        "mana": 50,
+        "strength": 10,
+        "charisma": 15
+      },
+      "description": "Royal headwear from a forgotten empire"
+    },
+    {
+      "id": "void_pendant",
+      "name": "Pendant of the Void",
+      "emoji": "📿",
+      "type": "accessory",
+      "tier": 4,
+      "craftTime": 240000,
+      "materials": {
+        "shadow_crystal": 12,
+        "void_essence": 15,
+        "legendary_essence": 10
+      },
+      "bonuses": {
+        "wisdom": 45,
+        "mana": 100,
+        "allStats": 15
+      },
+      "description": "An artifact that channels the void's infinite power"
+    }
+  ]
+}

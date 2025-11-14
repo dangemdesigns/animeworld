@@ -6,31 +6,66 @@
       "emoji": "😴",
       "duration": 3000,
       "goldReward": 0,
-      "expReward": 5
+      "expReward": 5,
+      "requiresZone": false,
+      "description": "Take a break to recover energy"
     },
     {
-      "id": "explore",
-      "name": "Exploring",
+      "id": "explore_zone",
+      "name": "Explore Zone",
       "emoji": "🗺️",
-      "duration": 5000,
-      "goldReward": 15,
-      "expReward": 10
+      "duration": 8000,
+      "goldReward": 20,
+      "expReward": 15,
+      "requiresZone": true,
+      "gathersMaterials": true,
+      "materialDropRate": 0.6,
+      "description": "Venture into a zone to discover treasures and materials"
     },
     {
-      "id": "hunt",
-      "name": "Hunting",
+      "id": "gather_materials",
+      "name": "Gather Materials",
+      "emoji": "⛏️",
+      "duration": 6000,
+      "goldReward": 5,
+      "expReward": 8,
+      "requiresZone": true,
+      "gathersMaterials": true,
+      "materialDropRate": 0.9,
+      "description": "Focus on collecting valuable materials from the zone"
+    },
+    {
+      "id": "hunt_monsters",
+      "name": "Hunt Monsters",
       "emoji": "⚔️",
-      "duration": 7000,
-      "goldReward": 25,
-      "expReward": 20
+      "duration": 10000,
+      "goldReward": 40,
+      "expReward": 30,
+      "requiresZone": true,
+      "gathersMaterials": true,
+      "materialDropRate": 0.4,
+      "description": "Battle dangerous creatures for gold and experience"
     },
     {
-      "id": "gather",
-      "name": "Gathering",
-      "emoji": "🌾",
+      "id": "train",
+      "name": "Training",
+      "emoji": "💪",
+      "duration": 5000,
+      "goldReward": 0,
+      "expReward": 25,
+      "requiresZone": false,
+      "description": "Practice combat skills to gain experience"
+    },
+    {
+      "id": "meditate",
+      "name": "Meditating",
+      "emoji": "🧘",
       "duration": 4000,
-      "goldReward": 10,
-      "expReward": 8
+      "goldReward": 0,
+      "expReward": 15,
+      "requiresZone": false,
+      "wisdomBonus": true,
+      "description": "Focus the mind to gain wisdom and experience"
     }
   ]
 }
