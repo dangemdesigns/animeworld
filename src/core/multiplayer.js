@@ -59,16 +59,14 @@ async function initGame() {
     elements.day.textContent = user.day;
     elements.heroCount.textContent = user.heroes.length;
 
-    // Update UI
-    updateHeroesList(user.heroes);
-
-    // Load game data
+    // Load game data FIRST before rendering UI
     await loadGameData();
 
     // Process offline progression
     processOfflineProgress();
 
-    // Update zones and materials display
+    // NOW update UI after game data is loaded
+    updateHeroesList(user.heroes);
     updateZonesDisplay();
     updateMaterialsDisplay();
 
@@ -363,12 +361,19 @@ function addLocalLog(message, type = 'info') {
  * Update heroes list
  */
 function updateHeroesList(heroes) {
-    if (!heroes || heroes.length === 0) {
-        elements.heroesList.innerHTML = '<p class="empty-message">No heroes yet. Summon your first hero!</p>';
-        return;
-    }
+    try {
+        if (!heroes || heroes.length === 0) {
+            elements.heroesList.innerHTML = '<p class="empty-message">No heroes yet. Summon your first hero!</p>';
+            return;
+        }
 
-    elements.heroesList.innerHTML = heroes.map(hero => {
+        if (!window.gameData || !window.gameData.activities || !window.gameData.zones) {
+            console.error('Game data not loaded yet!');
+            elements.heroesList.innerHTML = '<p class="empty-message">Loading game data...</p>';
+            return;
+        }
+
+        elements.heroesList.innerHTML = heroes.map(hero => {
         // Ensure hero has new properties (for old saves)
         if (!hero.current_zone) hero.current_zone = 'whispering_woods';
         if (!hero.activity_queue) hero.activity_queue = [];
@@ -385,9 +390,10 @@ function updateHeroesList(heroes) {
         // Generate zone selection dropdown
         const zoneOptions = currentUser.unlockedZones.map(zoneId => {
             const zone = getZoneById(zoneId);
+            if (!zone) return ''; // Skip if zone data not found
             const selected = zoneId === hero.current_zone ? 'selected' : '';
             return `<option value="${zoneId}" ${selected}>${zone.emoji} ${zone.name} (Lv ${zone.levelRequired}+)</option>`;
-        }).join('');
+        }).filter(opt => opt).join('');
 
         // Get next queued activity
         const nextQueuedActivity = hero.activity_queue && hero.activity_queue.length > 0
@@ -458,9 +464,13 @@ function updateHeroesList(heroes) {
         `;
     }).join('');
 
-    // Update stats display
-    elements.gold.textContent = currentUser.gold;
-    elements.heroCount.textContent = currentUser.heroes.length;
+        // Update stats display
+        elements.gold.textContent = currentUser.gold;
+        elements.heroCount.textContent = currentUser.heroes.length;
+    } catch (error) {
+        console.error('Error updating heroes list:', error);
+        elements.heroesList.innerHTML = '<p class="empty-message error">Error loading heroes. Please refresh the page.</p>';
+    }
 }
 
 /**
