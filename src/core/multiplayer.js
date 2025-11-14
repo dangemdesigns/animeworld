@@ -34,10 +34,20 @@ async function initGame() {
             gold: 100,
             day: 1,
             account_level: 1,
-            heroes: [],
+            heroes: [], // Active heroes (max 5-8 slots)
+            guildHall: [], // Stored heroes (unlimited)
             materials: {}, // Material inventory
             crafting: [], // Items being crafted
-            unlockedZones: ['whispering_woods'] // Start with first zone
+            unlockedZones: ['whispering_woods'], // Start with first zone
+            soulEssence: 0, // For converting duplicates
+            summonPity: { basic: 0, advanced: 0, elite: 0 }, // Pity counters
+            activeHeroSlots: 5, // Start with 5 active slots
+            lastDailyFree: 0, // Timestamp for daily free summon
+            statistics: { // Track player stats
+                totalSummons: 0,
+                legendariesSummoned: 0,
+                heroesAwakened: 0
+            }
         };
         console.log('🆕 Starting new game');
     } else {
@@ -45,6 +55,12 @@ async function initGame() {
         if (!user.materials) user.materials = {};
         if (!user.crafting) user.crafting = [];
         if (!user.unlockedZones) user.unlockedZones = ['whispering_woods'];
+        if (!user.guildHall) user.guildHall = [];
+        if (!user.soulEssence) user.soulEssence = 0;
+        if (!user.summonPity) user.summonPity = { basic: 0, advanced: 0, elite: 0 };
+        if (!user.activeHeroSlots) user.activeHeroSlots = 5;
+        if (!user.lastDailyFree) user.lastDailyFree = 0;
+        if (!user.statistics) user.statistics = { totalSummons: 0, legendariesSummoned: 0, heroesAwakened: 0 };
         console.log('📂 Loaded saved game');
     }
 
@@ -276,13 +292,16 @@ async function handleSummonHero() {
  */
 async function loadGameData() {
     try {
-        const [classesRes, namesRes, activitiesRes, zonesRes, materialsRes, craftingRes] = await Promise.all([
+        const [classesRes, namesRes, activitiesRes, zonesRes, materialsRes, craftingRes, perksRes, personalitiesRes, storyEventsRes] = await Promise.all([
             fetch('src/data/classes.json'),
             fetch('src/data/heroNames.json'),
             fetch('src/data/activities.json'),
             fetch('src/data/zones.json'),
             fetch('src/data/materials.json'),
-            fetch('src/data/crafting.json')
+            fetch('src/data/crafting.json'),
+            fetch('src/data/perks.json'),
+            fetch('src/data/personalities.json'),
+            fetch('src/data/storyEvents.json')
         ]);
 
         window.gameData = {
@@ -291,10 +310,13 @@ async function loadGameData() {
             activities: await activitiesRes.json(),
             zones: await zonesRes.json(),
             materials: await materialsRes.json(),
-            crafting: await craftingRes.json()
+            crafting: await craftingRes.json(),
+            perks: await perksRes.json(),
+            personalities: await personalitiesRes.json(),
+            storyEvents: await storyEventsRes.json()
         };
 
-        console.log('✅ Game data loaded');
+        console.log('✅ Game data loaded (including perks, personalities, and story events)');
     } catch (error) {
         console.error('Failed to load game data:', error);
         throw error;

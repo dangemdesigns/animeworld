@@ -1,0 +1,256 @@
+{
+  "personalities": [
+    {
+      "id": "brave",
+      "name": "Brave",
+      "emoji": "🦁",
+      "description": "Fearless and determined",
+      "dialogues": {
+        "summon": [
+          "I won't back down from any challenge!",
+          "Let's show them what we're made of!",
+          "No obstacle is too great!"
+        ],
+        "activity_start": [
+          "I'll give it my all!",
+          "This is nothing! Watch me!",
+          "Time to prove myself!"
+        ],
+        "activity_complete": [
+          "Victory is ours!",
+          "Another triumph!",
+          "Just as I expected!"
+        ],
+        "level_up": [
+          "My strength grows! I can feel it!",
+          "I'm getting stronger! Nothing can stop me now!",
+          "This power... I will use it to protect everyone!"
+        ],
+        "low_health": [
+          "I won't give up... never!",
+          "This isn't enough to stop me!"
+        ],
+        "idle": [
+          "Ready for the next adventure!",
+          "Bring on the challenge!"
+        ]
+      }
+    },
+    {
+      "id": "cheerful",
+      "name": "Cheerful",
+      "emoji": "😊",
+      "description": "Optimistic and friendly",
+      "dialogues": {
+        "summon": [
+          "Yay! Let's be friends!",
+          "This is going to be so much fun!",
+          "I'm so excited to go on adventures together!"
+        ],
+        "activity_start": [
+          "Let's do our best! ♪",
+          "This'll be fun!",
+          "Off we go~!"
+        ],
+        "activity_complete": [
+          "We did it! Great job everyone!",
+          "That was amazing!",
+          "Hehe, that went well!"
+        ],
+        "level_up": [
+          "Woohoo! I leveled up!",
+          "Yippee! I'm getting better!",
+          "Amazing! Look at me go!"
+        ],
+        "low_health": [
+          "Ow ow ow... but I'm okay!",
+          "Just a scratch! I think..."
+        ],
+        "idle": [
+          "La la la~ what's next?",
+          "I wonder what we'll do today!"
+        ]
+      }
+    },
+    {
+      "id": "serious",
+      "name": "Serious",
+      "emoji": "😐",
+      "description": "Focused and analytical",
+      "dialogues": {
+        "summon": [
+          "I will fulfill my duty.",
+          "Let us proceed with caution.",
+          "Understood. I'm ready."
+        ],
+        "activity_start": [
+          "Analyzing the situation...",
+          "Proceeding as planned.",
+          "Initiating task."
+        ],
+        "activity_complete": [
+          "Task completed efficiently.",
+          "As calculated.",
+          "Mission accomplished."
+        ],
+        "level_up": [
+          "Progress noted. Continuing.",
+          "Level increased. Performance optimized.",
+          "Strength parameters improved."
+        ],
+        "low_health": [
+          "Damage sustained. Adjusting strategy.",
+          "This requires careful planning."
+        ],
+        "idle": [
+          "Awaiting next objective.",
+          "Standing by."
+        ]
+      }
+    },
+    {
+      "id": "mysterious",
+      "name": "Mysterious",
+      "emoji": "🌙",
+      "description": "Enigmatic and cryptic",
+      "dialogues": {
+        "summon": [
+          "The threads of fate have brought us together...",
+          "Interesting... so you're the one.",
+          "Destiny calls, and I answer."
+        ],
+        "activity_start": [
+          "The shadows whisper secrets...",
+          "Let us see what fate has in store.",
+          "The stars align..."
+        ],
+        "activity_complete": [
+          "As I foresaw.",
+          "The outcome was written in the stars.",
+          "...Hmm. Curious."
+        ],
+        "level_up": [
+          "The veil lifts... I see more clearly now.",
+          "Power flows through the ancient paths.",
+          "Another step towards destiny."
+        ],
+        "low_health": [
+          "The future grows dim...",
+          "Darkness creeps closer..."
+        ],
+        "idle": [
+          "The future is clouded...",
+          "I sense something..."
+        ]
+      }
+    },
+    {
+      "id": "lazy",
+      "name": "Lazy",
+      "emoji": "😴",
+      "description": "Relaxed and unmotivated",
+      "dialogues": {
+        "summon": [
+          "Do I really have to...? *yawn*",
+          "Can't someone else do it?",
+          "Ugh, fine... I guess..."
+        ],
+        "activity_start": [
+          "*sigh* Alright, alright...",
+          "This better not take long...",
+          "Mmm... five more minutes?"
+        ],
+        "activity_complete": [
+          "Finally done. Can I nap now?",
+          "That was tiring... zzz",
+          "Whew. Time for a break."
+        ],
+        "level_up": [
+          "Oh, I leveled up? Cool, I guess.",
+          "More power means... more work, doesn't it? *sigh*",
+          "Yay... I'm stronger... zzz"
+        ],
+        "low_health": [
+          "Ow... that actually hurt...",
+          "Can we just... not do this?"
+        ],
+        "idle": [
+          "Zzz... *snore*",
+          "Is it nap time yet?"
+        ]
+      }
+    },
+    {
+      "id": "hotblooded",
+      "name": "Hotblooded",
+      "emoji": "🔥",
+      "description": "Passionate and intense",
+      "dialogues": {
+        "summon": [
+          "YEAH! LET'S DO THIS!",
+          "MY BLOOD IS BURNING WITH PASSION!",
+          "I'M FIRED UP AND READY TO GO!"
+        ],
+        "activity_start": [
+          "TIME TO SHOW THEM MY POWER!",
+          "LET'S GOOOOO!",
+          "NOTHING CAN STOP ME!"
+        ],
+        "activity_complete": [
+          "THAT'S WHAT I'M TALKING ABOUT!",
+          "YEAH! VICTORY IS OURS!",
+          "DID YOU SEE THAT?! INCREDIBLE!"
+        ],
+        "level_up": [
+          "YES! I CAN FEEL THE POWER SURGING!",
+          "THIS IS JUST THE BEGINNING! I'LL GET EVEN STRONGER!",
+          "MY FLAMES BURN BRIGHTER THAN EVER!"
+        ],
+        "low_health": [
+          "IS THAT ALL YOU GOT?! I'M JUST GETTING STARTED!",
+          "PAIN ONLY MAKES ME STRONGER!"
+        ],
+        "idle": [
+          "WHERE'S THE NEXT CHALLENGE?!",
+          "I'M READY FOR ANYTHING!"
+        ]
+      }
+    },
+    {
+      "id": "calm",
+      "name": "Calm",
+      "emoji": "🍃",
+      "description": "Peaceful and composed",
+      "dialogues": {
+        "summon": [
+          "Peace be with you, friend.",
+          "I am here to help. Stay calm.",
+          "Let us walk this path together, peacefully."
+        ],
+        "activity_start": [
+          "Breathe in... breathe out...",
+          "Let us proceed with tranquility.",
+          "Patience brings wisdom."
+        ],
+        "activity_complete": [
+          "Well done. Inner peace maintained.",
+          "A job well done, peacefully.",
+          "Balance has been restored."
+        ],
+        "level_up": [
+          "Growth comes naturally, like a flowing river.",
+          "Strength through serenity.",
+          "The path becomes clearer."
+        ],
+        "low_health": [
+          "Stay calm. All things pass.",
+          "Pain is temporary. Peace is eternal."
+        ],
+        "idle": [
+          "I am at peace.",
+          "...breathing gently..."
+        ]
+      }
+    }
+  ]
+}

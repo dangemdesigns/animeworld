@@ -1,0 +1,125 @@
+{
+  "encounters": {
+    "whispering_woods": [
+      {
+        "id": "ancient_grove",
+        "rarity": "uncommon",
+        "title": "Ancient Grove Discovery",
+        "story": "As cherry blossoms danced in the wind, {hero} stumbled upon an ancient grove. The trees whispered secrets of ages past, their beauty untouched by time...",
+        "reward": { "gold": 50, "exp": 30 }
+      },
+      {
+        "id": "forest_spirit",
+        "rarity": "rare",
+        "title": "Forest Spirit Encounter",
+        "story": "A gentle light appeared before {hero}. An ethereal forest spirit emerged, its eyes filled with ancient wisdom. 'You have a kind heart,' it said softly, blessing {hero} with nature's power.",
+        "reward": { "gold": 100, "exp": 80, "material": "uncommon_essence" }
+      },
+      {
+        "id": "hidden_treasure",
+        "rarity": "common",
+        "title": "Hidden Stash",
+        "story": "Behind a mossy stone, {hero} discovered a forgotten traveler's cache.",
+        "reward": { "gold": 30 }
+      }
+    ],
+    "jade_mountains": [
+      {
+        "id": "mountain_monastery",
+        "rarity": "rare",
+        "title": "Monastery of the Jade Monks",
+        "story": "Through the mist, {hero} discovered a hidden monastery. Ancient monks welcomed them with warm tea. 'Your journey is long,' said the eldest monk, 'but your spirit remains strong.' They shared their wisdom freely.",
+        "reward": { "exp": 150, "material": "jade" }
+      },
+      {
+        "id": "dragon_sighting",
+        "rarity": "epic",
+        "title": "Dragon of the Peaks",
+        "story": "The clouds parted as {hero} reached the summit. A majestic dragon soared overhead, its scales shimmering like emeralds. Their eyes met for a brief moment—a silent acknowledgment between kindred spirits. The dragon vanished into the heavens, leaving behind a single jade scale.",
+        "reward": { "gold": 300, "exp": 200, "material": "jade" }
+      }
+    ],
+    "azure_coast": [
+      {
+        "id": "underwater_cave",
+        "rarity": "uncommon",
+        "title": "Sunken Grotto",
+        "story": "{hero} dove beneath the azure waves and discovered a hidden grotto. Bioluminescent creatures lit the way to an ancient treasure, lost to the depths for centuries.",
+        "reward": { "gold": 120, "material": "sea_glass" }
+      },
+      {
+        "id": "sea_guardian",
+        "rarity": "epic",
+        "title": "Guardian of the Deep",
+        "story": "The waters trembled as an ancient sea turtle, larger than any ship, surfaced before {hero}. 'Young one,' it spoke with a voice like rolling thunder, 'you carry the light of courage. Take this gift from the depths.' A pearl of immeasurable beauty floated into {hero}'s hands.",
+        "reward": { "gold": 250, "exp": 180, "material": "pearls" }
+      }
+    ],
+    "crimson_desert": [
+      {
+        "id": "ancient_ruins",
+        "rarity": "rare",
+        "title": "Ruins of the Sun Empire",
+        "story": "Buried beneath endless crimson sands, {hero} unearthed the remnants of a civilization lost to time. Hieroglyphs glowed faintly in the scorching heat, telling tales of glory and fall. Among the ruins, treasures of a forgotten age awaited.",
+        "reward": { "gold": 200, "exp": 120, "material": "ancient_coins" }
+      },
+      {
+        "id": "desert_phantom",
+        "rarity": "epic",
+        "title": "Phantom of the Endless Sands",
+        "story": "A mirage? No... {hero}'s instincts screamed danger. A phantom warrior, cursed to wander the desert for eternity, materialized before them. 'Prove your worth,' it commanded. Steel clashed against spectral blade under the merciless sun. Finally, the phantom bowed. 'You are worthy. Take my blessing.'",
+        "reward": { "gold": 350, "exp": 250, "material": "fire_essence" }
+      }
+    ],
+    "shadow_realm": [
+      {
+        "id": "void_rift",
+        "rarity": "legendary",
+        "title": "Rift in Reality",
+        "story": "The air itself seemed to tear as {hero} ventured deeper into the shadow realm. Through the rift, glimpses of other worlds flickered—some beautiful, others terrifying. Stepping through required courage beyond measure. On the other side, {hero} found power beyond imagination.",
+        "reward": { "gold": 500, "exp": 400, "material": "void_essence" }
+      },
+      {
+        "id": "shadow_dragon",
+        "rarity": "mythical",
+        "title": "Eternal Night Kurayami",
+        "story": "Darkness given form. Wings that blotted out even the void. Eyes like dying stars. {hero} stood before Kurayami, the Shadow Dragon, ancient beyond reckoning. 'Few mortals have gazed upon me and lived,' its voice echoed through dimensions. The battle that followed would be spoken of in legends... {hero}'s name carved into eternity itself.",
+        "reward": { "gold": 1000, "exp": 800, "material": "shadow_crystal" }
+      }
+    ]
+  },
+  "criticalMoments": [
+    {
+      "trigger": "low_health",
+      "stories": [
+        "Despite wounds that would fell lesser warriors, {hero} refused to yield. Their determination burned brighter than any flame.",
+        "Blood stained their armor, but {hero}'s spirit remained unbroken. 'I've come too far to fall here...'",
+        "On the brink of defeat, {hero} remembered why they fought. That memory became their strength."
+      ]
+    },
+    {
+      "trigger": "victory",
+      "stories": [
+        "With a final, decisive strike, {hero} emerged victorious. The battlefield fell silent in awe.",
+        "As their opponent fell, {hero} showed respect—for only through worthy adversaries do we grow stronger.",
+        "Victory achieved, {hero} stood tall. But there was no arrogance in their eyes, only the quiet confidence of one who has proven themselves."
+      ]
+    },
+    {
+      "trigger": "first_rare",
+      "stories": [
+        "The summoning circle erupted in brilliant light! A hero of rare caliber has answered your call!",
+        "Destiny's threads converge—a warrior of exceptional talent appears before you!",
+        "The heavens themselves seem to celebrate as a remarkable soul joins your guild!"
+      ]
+    },
+    {
+      "trigger": "first_legendary",
+      "stories": [
+        "The world trembles! Reality bends! From legend itself, a hero of unparalleled might descends!",
+        "Stars align! Fate itself has brought you together with a LEGENDARY hero!",
+        "History will remember this moment—the day a legend joined your banner!"
+      ]
+    }
+  ]
+}

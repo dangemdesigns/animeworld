@@ -1,0 +1,282 @@
+{
+  "perks": [
+    {
+      "id": "stat_str_minor",
+      "name": "Minor Strength",
+      "emoji": "💪",
+      "tier": "trash",
+      "type": "stat",
+      "description": "+3% Strength",
+      "effect": { "stat": "strength", "value": 0.03 }
+    },
+    {
+      "id": "stat_str_common",
+      "name": "Strength Boost",
+      "emoji": "💪",
+      "tier": "common",
+      "type": "stat",
+      "description": "+8% Strength",
+      "effect": { "stat": "strength", "value": 0.08 }
+    },
+    {
+      "id": "stat_str_uncommon",
+      "name": "Enhanced Strength",
+      "emoji": "💪",
+      "tier": "uncommon",
+      "type": "stat",
+      "description": "+15% Strength",
+      "effect": { "stat": "strength", "value": 0.15 }
+    },
+    {
+      "id": "stat_str_rare",
+      "name": "Superior Strength",
+      "emoji": "💪",
+      "tier": "rare",
+      "type": "stat",
+      "description": "+25% Strength",
+      "effect": { "stat": "strength", "value": 0.25 }
+    },
+    {
+      "id": "stat_str_epic",
+      "name": "Titan's Might",
+      "emoji": "💪",
+      "tier": "epic",
+      "type": "stat",
+      "description": "+40% Strength",
+      "effect": { "stat": "strength", "value": 0.40 }
+    },
+    {
+      "id": "stat_str_legendary",
+      "name": "God's Strength",
+      "emoji": "💪",
+      "tier": "legendary",
+      "type": "stat",
+      "description": "+70% Strength",
+      "effect": { "stat": "strength", "value": 0.70 }
+    },
+    {
+      "id": "stat_def_common",
+      "name": "Iron Skin",
+      "emoji": "🛡️",
+      "tier": "common",
+      "type": "stat",
+      "description": "+8% Defense",
+      "effect": { "stat": "defense", "value": 0.08 }
+    },
+    {
+      "id": "stat_def_rare",
+      "name": "Diamond Body",
+      "emoji": "🛡️",
+      "tier": "rare",
+      "type": "stat",
+      "description": "+25% Defense",
+      "effect": { "stat": "defense", "value": 0.25 }
+    },
+    {
+      "id": "stat_agi_uncommon",
+      "name": "Swift Steps",
+      "emoji": "⚡",
+      "tier": "uncommon",
+      "type": "stat",
+      "description": "+15% Agility",
+      "effect": { "stat": "agility", "value": 0.15 }
+    },
+    {
+      "id": "stat_wis_rare",
+      "name": "Sage's Insight",
+      "emoji": "🧠",
+      "tier": "rare",
+      "type": "stat",
+      "description": "+25% Wisdom",
+      "effect": { "stat": "wisdom", "value": 0.25 }
+    },
+    {
+      "id": "ability_crit_common",
+      "name": "Lucky Strike",
+      "emoji": "🎯",
+      "tier": "common",
+      "type": "ability",
+      "description": "5% Critical Hit Chance",
+      "effect": { "ability": "critical", "value": 0.05 }
+    },
+    {
+      "id": "ability_crit_rare",
+      "name": "Deadly Precision",
+      "emoji": "🎯",
+      "tier": "rare",
+      "type": "ability",
+      "description": "15% Critical Hit Chance",
+      "effect": { "ability": "critical", "value": 0.15 }
+    },
+    {
+      "id": "ability_lifesteal_uncommon",
+      "name": "Vampiric Touch",
+      "emoji": "🩸",
+      "tier": "uncommon",
+      "type": "ability",
+      "description": "Restore 10% HP on hit",
+      "effect": { "ability": "lifesteal", "value": 0.10 }
+    },
+    {
+      "id": "ability_double_epic",
+      "name": "Shadow Clone",
+      "emoji": "👥",
+      "tier": "epic",
+      "type": "ability",
+      "description": "10% chance for double rewards",
+      "effect": { "ability": "double_reward", "value": 0.10 }
+    },
+    {
+      "id": "zone_fire_uncommon",
+      "name": "Fire Affinity",
+      "emoji": "🔥",
+      "tier": "uncommon",
+      "type": "zone",
+      "description": "+30% rewards in Crimson Desert",
+      "effect": { "zone": "crimson_desert", "value": 0.30 }
+    },
+    {
+      "id": "zone_water_uncommon",
+      "name": "Ocean's Blessing",
+      "emoji": "🌊",
+      "tier": "uncommon",
+      "type": "zone",
+      "description": "+30% rewards in Azure Coast",
+      "effect": { "zone": "azure_coast", "value": 0.30 }
+    },
+    {
+      "id": "zone_shadow_rare",
+      "name": "Shadow Walker",
+      "emoji": "🌑",
+      "tier": "rare",
+      "type": "zone",
+      "description": "+50% rewards in Shadow Realm",
+      "effect": { "zone": "shadow_realm", "value": 0.50 }
+    },
+    {
+      "id": "activity_hunt_common",
+      "name": "Monster Hunter",
+      "emoji": "⚔️",
+      "tier": "common",
+      "type": "activity",
+      "description": "+20% gold from Hunt Monsters",
+      "effect": { "activity": "hunt_monsters", "stat": "gold", "value": 0.20 }
+    },
+    {
+      "id": "activity_explore_uncommon",
+      "name": "Explorer's Eye",
+      "emoji": "🗺️",
+      "tier": "uncommon",
+      "type": "activity",
+      "description": "+30% exp from Explore Zone",
+      "effect": { "activity": "explore_zone", "stat": "exp", "value": 0.30 }
+    },
+    {
+      "id": "activity_gather_rare",
+      "name": "Master Gatherer",
+      "emoji": "⛏️",
+      "tier": "rare",
+      "type": "activity",
+      "description": "+100% material drop from Gather",
+      "effect": { "activity": "gather_materials", "stat": "materials", "value": 1.0 }
+    },
+    {
+      "id": "passive_gold_common",
+      "name": "Gold Find",
+      "emoji": "💰",
+      "tier": "common",
+      "type": "passive",
+      "description": "+10% gold from all sources",
+      "effect": { "passive": "gold_find", "value": 0.10 }
+    },
+    {
+      "id": "passive_gold_epic",
+      "name": "Midas Touch",
+      "emoji": "💰",
+      "tier": "epic",
+      "type": "passive",
+      "description": "+50% gold from all sources",
+      "effect": { "passive": "gold_find", "value": 0.50 }
+    },
+    {
+      "id": "passive_exp_uncommon",
+      "name": "Quick Learner",
+      "emoji": "📚",
+      "tier": "uncommon",
+      "type": "passive",
+      "description": "+15% exp from all sources",
+      "effect": { "passive": "exp_boost", "value": 0.15 }
+    },
+    {
+      "id": "passive_exp_legendary",
+      "name": "Genius of Battle",
+      "emoji": "📚",
+      "tier": "legendary",
+      "type": "passive",
+      "description": "+100% exp from all sources",
+      "effect": { "passive": "exp_boost", "value": 1.0 }
+    },
+    {
+      "id": "passive_material_rare",
+      "name": "Treasure Hunter",
+      "emoji": "💎",
+      "tier": "rare",
+      "type": "passive",
+      "description": "+40% material drop rate",
+      "effect": { "passive": "material_find", "value": 0.40 }
+    },
+    {
+      "id": "passive_heal_uncommon",
+      "name": "Auto-Regeneration",
+      "emoji": "❤️",
+      "tier": "uncommon",
+      "type": "passive",
+      "description": "Slowly restore HP over time",
+      "effect": { "passive": "auto_heal", "value": 0.05 }
+    },
+    {
+      "id": "unique_timeskip_legendary",
+      "name": "Temporal Flux",
+      "emoji": "⏰",
+      "tier": "legendary",
+      "type": "unique",
+      "description": "Activities complete 20% faster",
+      "effect": { "unique": "time_skip", "value": 0.20 }
+    },
+    {
+      "id": "unique_teleport_epic",
+      "name": "Dimensional Step",
+      "emoji": "🌀",
+      "tier": "epic",
+      "type": "unique",
+      "description": "Can instantly travel between zones",
+      "effect": { "unique": "teleport", "value": 1 }
+    },
+    {
+      "id": "trash_useless_1",
+      "name": "Stubbed Toe",
+      "emoji": "🦶",
+      "tier": "trash",
+      "type": "trash",
+      "description": "Absolutely useless (-1% all stats)",
+      "effect": { "stat": "all", "value": -0.01 }
+    },
+    {
+      "id": "trash_useless_2",
+      "name": "Bad Hair Day",
+      "emoji": "💇",
+      "tier": "trash",
+      "type": "trash",
+      "description": "Feeling unlucky today (-2% gold)",
+      "effect": { "passive": "gold_find", "value": -0.02 }
+    }
+  ],
+  "perkTiers": {
+    "trash": { "weight": 40, "color": "#8B8B8B" },
+    "common": { "weight": 30, "color": "#FFFFFF" },
+    "uncommon": { "weight": 20, "color": "#6BBE6B" },
+    "rare": { "weight": 8, "color": "#6BA3FF" },
+    "epic": { "weight": 1.8, "color": "#C770FF" },
+    "legendary": { "weight": 0.2, "color": "#FFD700" }
+  }
+}
