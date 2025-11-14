@@ -772,3 +772,531 @@ body {
         grid-column: span 3;
     }
 }
+
+/* ==========================================
+   Anime Enhancement: Rarity Visual Effects
+   ========================================== */
+
+/* Rarity Colors */
+:root {
+    --rarity-trash: #8B8B8B;
+    --rarity-common: #FFFFFF;
+    --rarity-uncommon: #6BBE6B;
+    --rarity-rare: #6BA3FF;
+    --rarity-epic: #C770FF;
+    --rarity-legendary: #FFD700;
+    --rarity-mythical: #FF1744;
+}
+
+/* Hero Card Rarity Styling */
+.hero-card.rarity-trash {
+    border-left-color: var(--rarity-trash);
+    background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+}
+
+.hero-card.rarity-common {
+    border-left-color: var(--rarity-common);
+    background: linear-gradient(135deg, #fafafa 0%, #f0f0f0 100%);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.hero-card.rarity-uncommon {
+    border-left-color: var(--rarity-uncommon);
+    background: linear-gradient(135deg, #f0f8f0 0%, #e8f5e8 100%);
+    box-shadow: 0 2px 12px rgba(107, 190, 107, 0.2);
+}
+
+.hero-card.rarity-rare {
+    border-left-color: var(--rarity-rare);
+    border-left-width: 5px;
+    background: linear-gradient(135deg, #f0f6ff 0%, #e8f2ff 100%);
+    box-shadow: 0 4px 16px rgba(107, 163, 255, 0.3);
+    position: relative;
+}
+
+.hero-card.rarity-rare::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: var(--radius-sm);
+    background: linear-gradient(135deg, rgba(107, 163, 255, 0.1) 0%, transparent 100%);
+    pointer-events: none;
+}
+
+.hero-card.rarity-epic {
+    border-left-color: var(--rarity-epic);
+    border-left-width: 6px;
+    background: linear-gradient(135deg, #f8f0ff 0%, #f0e8ff 100%);
+    box-shadow: 0 6px 20px rgba(199, 112, 255, 0.4);
+    position: relative;
+    animation: epicGlow 3s ease-in-out infinite;
+}
+
+.hero-card.rarity-epic::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: var(--radius-sm);
+    background: linear-gradient(135deg, rgba(199, 112, 255, 0.15) 0%, transparent 100%);
+    pointer-events: none;
+}
+
+.hero-card.rarity-legendary {
+    border-left-color: var(--rarity-legendary);
+    border-left-width: 7px;
+    background: linear-gradient(135deg, #fffdf0 0%, #fff8e0 100%);
+    box-shadow: 0 8px 24px rgba(255, 215, 0, 0.5);
+    position: relative;
+    animation: legendaryGlow 2s ease-in-out infinite;
+}
+
+.hero-card.rarity-legendary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: var(--radius-sm);
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, transparent 100%);
+    pointer-events: none;
+    animation: shimmer 2s infinite;
+}
+
+.hero-card.rarity-mythical {
+    border-left-color: var(--rarity-mythical);
+    border-left-width: 8px;
+    background: linear-gradient(135deg, #fff0f5 0%, #ffe8f0 100%);
+    box-shadow: 0 10px 30px rgba(255, 23, 68, 0.6);
+    position: relative;
+    animation: mythicalGlow 1.5s ease-in-out infinite;
+}
+
+.hero-card.rarity-mythical::before {
+    content: '✨';
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    font-size: 2rem;
+    animation: sparkle 2s ease-in-out infinite;
+}
+
+.hero-card.rarity-mythical::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: var(--radius-sm);
+    background: linear-gradient(135deg, rgba(255, 23, 68, 0.25) 0%, rgba(199, 112, 255, 0.15) 50%, rgba(107, 163, 255, 0.15) 100%);
+    pointer-events: none;
+    animation: mythicalShift 3s ease-in-out infinite;
+}
+
+/* Rarity Glow Animations */
+@keyframes epicGlow {
+    0%, 100% {
+        box-shadow: 0 6px 20px rgba(199, 112, 255, 0.4);
+    }
+    50% {
+        box-shadow: 0 6px 30px rgba(199, 112, 255, 0.6);
+    }
+}
+
+@keyframes legendaryGlow {
+    0%, 100% {
+        box-shadow: 0 8px 24px rgba(255, 215, 0, 0.5);
+    }
+    50% {
+        box-shadow: 0 8px 40px rgba(255, 215, 0, 0.8);
+    }
+}
+
+@keyframes mythicalGlow {
+    0%, 100% {
+        box-shadow: 0 10px 30px rgba(255, 23, 68, 0.6);
+    }
+    50% {
+        box-shadow: 0 10px 50px rgba(255, 23, 68, 0.9);
+    }
+}
+
+@keyframes sparkle {
+    0%, 100% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.2) rotate(180deg);
+        opacity: 0.7;
+    }
+}
+
+@keyframes mythicalShift {
+    0%, 100% {
+        opacity: 0.8;
+    }
+    33% {
+        opacity: 0.6;
+    }
+    66% {
+        opacity: 0.9;
+    }
+}
+
+/* Hero Meta (Rarity + Personality Display) */
+.hero-meta {
+    display: flex;
+    gap: var(--spacing-xs);
+    margin-bottom: var(--spacing-xs);
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.hero-rarity {
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.rarity-trash .hero-rarity {
+    background: var(--rarity-trash);
+    color: white;
+}
+
+.rarity-common .hero-rarity {
+    background: var(--rarity-common);
+    color: var(--text-primary);
+    border: 1px solid #ccc;
+}
+
+.rarity-uncommon .hero-rarity {
+    background: var(--rarity-uncommon);
+    color: white;
+}
+
+.rarity-rare .hero-rarity {
+    background: var(--rarity-rare);
+    color: white;
+}
+
+.rarity-epic .hero-rarity {
+    background: var(--rarity-epic);
+    color: white;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.rarity-legendary .hero-rarity {
+    background: var(--rarity-legendary);
+    color: #333;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+.rarity-mythical .hero-rarity {
+    background: linear-gradient(135deg, var(--rarity-mythical) 0%, var(--rarity-epic) 100%);
+    color: white;
+    animation: pulse 1s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+.hero-personality {
+    padding: 0.25rem 0.5rem;
+    background: var(--bg-secondary);
+    border-radius: 4px;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-light);
+}
+
+/* Hero Class with Reroll Button */
+.hero-class {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-xs);
+    padding: var(--spacing-xs);
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: var(--radius-sm);
+}
+
+.btn-class-reroll {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.7rem;
+    background: var(--accent-warm);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-class-reroll:hover {
+    background: #d9a48f;
+    transform: scale(1.05);
+}
+
+/* Perks Grid */
+.hero-perks {
+    margin-top: var(--spacing-sm);
+    padding: var(--spacing-xs);
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: var(--radius-sm);
+}
+
+.perks-grid {
+    display: grid;
+    gap: var(--spacing-xs);
+    margin-top: var(--spacing-xs);
+}
+
+.perk-slot {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs);
+    background: white;
+    border-radius: 4px;
+    border-left: 3px solid var(--border-light);
+    transition: all 0.2s;
+}
+
+.perk-slot.perk-trash {
+    border-left-color: var(--rarity-trash);
+    background: #fafafa;
+}
+
+.perk-slot.perk-common {
+    border-left-color: var(--rarity-common);
+    border-left-width: 3px;
+    border: 1px solid #e0e0e0;
+}
+
+.perk-slot.perk-uncommon {
+    border-left-color: var(--rarity-uncommon);
+    background: linear-gradient(135deg, white 0%, #f9fff9 100%);
+}
+
+.perk-slot.perk-rare {
+    border-left-color: var(--rarity-rare);
+    border-left-width: 4px;
+    background: linear-gradient(135deg, white 0%, #f5f9ff 100%);
+    box-shadow: 0 2px 8px rgba(107, 163, 255, 0.15);
+}
+
+.perk-slot.perk-epic {
+    border-left-color: var(--rarity-epic);
+    border-left-width: 4px;
+    background: linear-gradient(135deg, white 0%, #fcf9ff 100%);
+    box-shadow: 0 2px 10px rgba(199, 112, 255, 0.2);
+}
+
+.perk-slot.perk-legendary {
+    border-left-color: var(--rarity-legendary);
+    border-left-width: 5px;
+    background: linear-gradient(135deg, white 0%, #fffef5 100%);
+    box-shadow: 0 2px 12px rgba(255, 215, 0, 0.3);
+    animation: perkGlow 2s ease-in-out infinite;
+}
+
+@keyframes perkGlow {
+    0%, 100% {
+        box-shadow: 0 2px 12px rgba(255, 215, 0, 0.3);
+    }
+    50% {
+        box-shadow: 0 2px 20px rgba(255, 215, 0, 0.5);
+    }
+}
+
+.perk-slot.locked {
+    background: #f5f5f5;
+    border-left-color: #ccc;
+    opacity: 0.7;
+}
+
+.perk-info {
+    flex: 1;
+}
+
+.perk-name {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.perk-desc {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+}
+
+.perk-actions {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.btn-perk-action {
+    padding: 0.2rem 0.4rem;
+    font-size: 0.65rem;
+    background: var(--accent-warm);
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.btn-perk-action:hover {
+    background: #d9a48f;
+    transform: scale(1.05);
+}
+
+.btn-perk-action.unlock {
+    background: var(--accent-gold);
+}
+
+.btn-perk-action.unlock:hover {
+    background: #c19d2e;
+}
+
+/* Awakening Stars */
+.hero-level {
+    font-size: 0.85rem;
+    color: var(--accent-gold);
+    font-weight: 600;
+}
+
+/* ==========================================
+   Summoning Portal UI
+   ========================================== */
+
+.summon-panel {
+    grid-column: span 1;
+}
+
+.summon-grid {
+    display: grid;
+    gap: var(--spacing-sm);
+}
+
+.summon-option {
+    background: linear-gradient(135deg, var(--bg-secondary) 0%, #F0E6DA 100%);
+    border-radius: var(--radius-sm);
+    padding: var(--spacing-sm);
+    border: 2px solid var(--border-light);
+    transition: all 0.3s ease;
+}
+
+.summon-option:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px var(--shadow);
+}
+
+.summon-free {
+    border-color: #6BBE6B;
+    background: linear-gradient(135deg, #f0f8f0 0%, #e8f5e8 100%);
+}
+
+.summon-basic {
+    border-color: #A0A0A0;
+}
+
+.summon-advanced {
+    border-color: #6BA3FF;
+    background: linear-gradient(135deg, #f0f6ff 0%, #e8f2ff 100%);
+}
+
+.summon-elite {
+    border-color: #FFD700;
+    background: linear-gradient(135deg, #fffdf0 0%, #fff8e0 100%);
+    box-shadow: 0 2px 12px rgba(255, 215, 0, 0.2);
+}
+
+.summon-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-xs);
+}
+
+.summon-header h3 {
+    font-size: 1rem;
+    margin: 0;
+    color: var(--text-primary);
+}
+
+.summon-cost {
+    padding: 0.25rem 0.5rem;
+    background: var(--accent-gold);
+    color: white;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.summon-free .summon-cost {
+    background: #6BBE6B;
+}
+
+.summon-desc {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-style: italic;
+    margin-bottom: var(--spacing-xs);
+}
+
+.summon-rates {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-sm);
+    padding: var(--spacing-xs);
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 4px;
+    text-align: center;
+}
+
+.pity-counter {
+    margin-top: var(--spacing-xs);
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    text-align: center;
+}
+
+.pity-counter span {
+    font-weight: 700;
+    color: var(--accent-gold);
+}
+
+.summon-cooldown {
+    margin-top: var(--spacing-xs);
+    padding: var(--spacing-xs);
+    background: rgba(255, 215, 0, 0.2);
+    border-radius: 4px;
+    font-size: 0.75rem;
+    text-align: center;
+    color: var(--text-secondary);
+}
+
+/* Responsive adjustments for summon panel */
+@media (max-width: 968px) {
+    .summon-panel {
+        grid-column: span 1;
+    }
+}

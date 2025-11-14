@@ -90,6 +90,10 @@ async function initGame() {
     addLocalLog('Welcome to Echoes of the Lantern!', 'info');
     addLocalLog('🎮 Playing in single-player mode', 'info');
 
+    // Update UI displays
+    updateUIDisplays();
+    updateDailyCooldownDisplay();
+
     // Start auto-activity system
     startAutoActivitySystem();
 
@@ -199,27 +203,104 @@ function cacheElements() {
     elements.gold = document.getElementById('gold');
     elements.day = document.getElementById('day');
     elements.heroCount = document.getElementById('hero-count');
+    elements.guildHallCount = document.getElementById('guild-hall-count');
+    elements.soulEssence = document.getElementById('soul-essence');
     elements.heroesList = document.getElementById('heroes-list');
     elements.activityLog = document.getElementById('activity-log');
     elements.zonesList = document.getElementById('zones-list');
     elements.materialsList = document.getElementById('materials-list');
+
+    // Summon portal elements
+    elements.dailyFreeBtn = document.getElementById('daily-free-btn');
+    elements.basicSummonBtn = document.getElementById('basic-summon-btn');
+    elements.advancedSummonBtn = document.getElementById('advanced-summon-btn');
+    elements.eliteSummonBtn = document.getElementById('elite-summon-btn');
+    elements.dailyCooldown = document.getElementById('daily-cooldown');
+    elements.basicPity = document.getElementById('basic-pity');
+    elements.advancedPity = document.getElementById('advanced-pity');
+    elements.elitePity = document.getElementById('elite-pity');
 }
 
 /**
  * Setup game listeners
  */
 function setupGameListeners() {
-    document.getElementById('summon-btn').addEventListener('click', handleSummonHero);
+    elements.dailyFreeBtn.addEventListener('click', handleDailyFreeSummon);
+    elements.basicSummonBtn.addEventListener('click', () => handleSummonHero('basic', 50));
+    elements.advancedSummonBtn.addEventListener('click', () => handleSummonHero('advanced', 150));
+    elements.eliteSummonBtn.addEventListener('click', () => handleSummonHero('elite', 400));
 }
 
 /**
- * Handle summon hero
+ * Update UI displays (gold, hero count, guild hall, soul essence, pity)
  */
-async function handleSummonHero() {
-    const SUMMON_COST = 50;
+function updateUIDisplays() {
+    elements.gold.textContent = currentUser.gold;
+    elements.heroCount.textContent = currentUser.heroes.length;
+    elements.guildHallCount.textContent = currentUser.guildHall.length;
+    elements.soulEssence.textContent = currentUser.soulEssence;
 
-    if (currentUser.gold < SUMMON_COST) {
-        alert('Not enough gold to summon a hero!');
+    // Update pity counters
+    elements.basicPity.textContent = currentUser.summonPity.basic || 0;
+    elements.advancedPity.textContent = currentUser.summonPity.advanced || 0;
+    elements.elitePity.textContent = currentUser.summonPity.elite || 0;
+}
+
+/**
+ * Update daily free summon cooldown display
+ */
+function updateDailyCooldownDisplay() {
+    const now = Date.now();
+    const oneDay = 24 * 60 * 60 * 1000;
+    const timeLeft = oneDay - (now - currentUser.lastDailyFree);
+
+    if (timeLeft > 0) {
+        const hoursLeft = Math.floor(timeLeft / (60 * 60 * 1000));
+        const minutesLeft = Math.floor((timeLeft % (60 * 60 * 1000)) / (60 * 1000));
+        elements.dailyCooldown.textContent = `Next free summon in ${hoursLeft}h ${minutesLeft}m`;
+        elements.dailyCooldown.style.display = 'block';
+        elements.dailyFreeBtn.disabled = true;
+    } else {
+        elements.dailyCooldown.style.display = 'none';
+        elements.dailyFreeBtn.disabled = false;
+    }
+}
+
+/**
+ * Handle daily free summon
+ */
+async function handleDailyFreeSummon() {
+    const now = Date.now();
+    const oneDay = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+
+    // Check if 24 hours have passed since last free summon
+    if (now - currentUser.lastDailyFree < oneDay) {
+        const timeLeft = oneDay - (now - currentUser.lastDailyFree);
+        const hoursLeft = Math.floor(timeLeft / (60 * 60 * 1000));
+        const minutesLeft = Math.floor((timeLeft % (60 * 60 * 1000)) / (60 * 1000));
+        alert(`Daily free summon available in ${hoursLeft}h ${minutesLeft}m`);
+        return;
+    }
+
+    // Perform free summon with "daily" type (worse rates than basic)
+    currentUser.lastDailyFree = now;
+    await performSummon('daily', 0);
+    updateDailyCooldownDisplay();
+}
+
+/**
+ * Handle summon hero (for different summon types)
+ */
+async function handleSummonHero(summonType, cost) {
+    await performSummon(summonType, cost);
+}
+
+/**
+ * Perform summon with type and cost
+ */
+async function performSummon(summonType, cost) {
+    if (currentUser.gold < cost) {
+        alert(`Not enough gold! Need ${cost} gold for this summon.`);
         return;
     }
 
@@ -230,60 +311,92 @@ async function handleSummonHero() {
         }
 
         // Deduct gold
-        currentUser.gold -= SUMMON_COST;
+        currentUser.gold -= cost;
 
-        // Generate random hero
-        const firstName = getRandomElement(window.gameData.heroNames.firstNames);
-        const lastName = getRandomElement(window.gameData.heroNames.lastNames);
-        const heroClass = getRandomElement(window.gameData.classes.classes);
+        // Generate hero with new anime system
+        const hero = generateHero(summonType);
 
-        const hero = {
-            id: generateId(),
-            name: `${firstName} ${lastName}`,
-            class: heroClass.id,
-            level: 1,
-            exp: 0,
-            exp_to_next: 100,
-            stats: {
-                strength: 10 + (heroClass.bonuses.strength || 0),
-                defense: 10 + (heroClass.bonuses.defense || 0),
-                health: 50 + (heroClass.bonuses.health || 0),
-                maxHealth: 50 + (heroClass.bonuses.health || 0),
-                intelligence: 10 + (heroClass.bonuses.intelligence || 0),
-                agility: 10 + (heroClass.bonuses.agility || 0),
-                wisdom: 10 + (heroClass.bonuses.wisdom || 0),
-                luck: 10 + (heroClass.bonuses.luck || 0),
-                classEmoji: heroClass.emoji
-            },
-            current_activity: null,
-            activity_start_time: null,
-            current_zone: 'whispering_woods', // Default starting zone
-            activity_queue: [], // Queue of activities to auto-execute
-            equipment: { // Hero equipment slots
-                weapon: null,
-                armor: null,
-                accessory: null
+        // Get class and personality data for display
+        const heroClass = window.gameData.classes.classes.find(c => c.id === hero.class);
+        const personality = getPersonalityById(hero.personality);
+
+        // Check if hero roster is full
+        if (currentUser.heroes.length >= currentUser.activeHeroSlots) {
+            // Send to Guild Hall
+            currentUser.guildHall.push(hero);
+            addLocalLog(`📦 Guild Hall is full! ${hero.name} sent to storage.`, 'info');
+        } else {
+            // Add to active roster
+            currentUser.heroes.push(hero);
+        }
+
+        // Update pity counter (only for non-daily summons)
+        if (summonType !== 'daily') {
+            if (!currentUser.summonPity[summonType]) currentUser.summonPity[summonType] = 0;
+
+            // Reset pity if legendary or mythical
+            if (hero.rarity === 'legendary' || hero.rarity === 'mythical') {
+                currentUser.summonPity[summonType] = 0;
+                currentUser.statistics.legendariesSummoned++;
+            } else {
+                currentUser.summonPity[summonType]++;
             }
-        };
+        } else if (hero.rarity === 'legendary' || hero.rarity === 'mythical') {
+            // Track legendary stats even for daily summons
+            currentUser.statistics.legendariesSummoned++;
+        }
 
-        // Add hero to list
-        currentUser.heroes.push(hero);
+        // Update statistics
+        currentUser.statistics.totalSummons++;
 
         // Update UI
-        elements.gold.textContent = currentUser.gold;
-        elements.heroCount.textContent = currentUser.heroes.length;
+        updateUIDisplays();
         updateHeroesList(currentUser.heroes);
 
-        // Add log entry
-        addLocalLog(`✨ ${hero.stats.classEmoji} ${hero.name} the ${heroClass.name} has arrived!`, 'success');
+        // Get personality dialogue
+        const summonDialogue = personality ? getRandomElement(personality.dialogues.summon) : '';
+
+        // Create rarity-appropriate summoning message
+        const rarityMessages = {
+            common: `✨`,
+            uncommon: `⭐`,
+            rare: `🌟 Rare!`,
+            epic: `💫 EPIC!!`,
+            legendary: `🔥 LEGENDARY!!!`,
+            mythical: `⚡ MYTHICAL!!!! ⚡`
+        };
+
+        const rarityMsg = rarityMessages[hero.rarity] || '✨';
+
+        // Add log entry with personality
+        addLocalLog(
+            `${rarityMsg} ${hero.stats.classEmoji} ${hero.name} the ${heroClass.name} (${hero.rarity.toUpperCase()}) has arrived!`,
+            hero.rarity === 'legendary' || hero.rarity === 'mythical' ? 'success' : 'info'
+        );
+
+        if (summonDialogue) {
+            addLocalLog(`${personality.emoji} "${summonDialogue}"`, 'info');
+        }
+
+        // Show perks
+        const perk1 = getPerkById(hero.perks.slot1);
+        const perk2 = getPerkById(hero.perks.slot2);
+        if (perk1 && perk2) {
+            addLocalLog(
+                `🎴 Starting Perks: ${perk1.emoji} ${perk1.name}, ${perk2.emoji} ${perk2.name}`,
+                'info'
+            );
+        }
 
         // Save to localStorage
         saveLocalGameState();
 
-        console.log(`✅ Summoned ${hero.name}`);
+        console.log(`✅ Summoned ${hero.name} (${hero.rarity})`);
     } catch (error) {
         console.error('Summon error:', error);
         alert('Failed to summon hero: ' + error.message);
+        // Refund gold on error
+        currentUser.gold += cost;
     }
 }
 
@@ -335,6 +448,244 @@ function getRandomElement(array) {
  */
 function generateId() {
     return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+}
+
+/**
+ * Weighted random selection
+ */
+function weightedRandom(weights) {
+    const totalWeight = Object.values(weights).reduce((sum, weight) => sum + weight, 0);
+    let random = Math.random() * totalWeight;
+
+    for (const [key, weight] of Object.entries(weights)) {
+        random -= weight;
+        if (random <= 0) return key;
+    }
+    return Object.keys(weights)[0];
+}
+
+/**
+ * Determine hero rarity based on summon type
+ */
+function determineRarity(summonType = 'basic', pityCounter = 0) {
+    // Pity system (doesn't apply to daily free summon)
+    if (summonType !== 'daily') {
+        if (pityCounter >= 50) return 'legendary'; // Super pity
+        if (pityCounter >= 10) return 'rare'; // Regular pity
+    }
+
+    const weights = {
+        daily: {
+            common: 70,
+            uncommon: 25,
+            rare: 5,
+            epic: 0,
+            legendary: 0,
+            mythical: 0
+        },
+        basic: {
+            common: 55,
+            uncommon: 35,
+            rare: 10,
+            epic: 0,
+            legendary: 0,
+            mythical: 0
+        },
+        advanced: {
+            common: 0,
+            uncommon: 60,
+            rare: 30,
+            epic: 9,
+            legendary: 1,
+            mythical: 0
+        },
+        elite: {
+            common: 0,
+            uncommon: 0,
+            rare: 50,
+            epic: 35,
+            legendary: 13,
+            mythical: 2
+        }
+    };
+
+    return weightedRandom(weights[summonType] || weights.basic);
+}
+
+/**
+ * Generate random perk
+ */
+function generateRandomPerk() {
+    if (!window.gameData || !window.gameData.perks) return null;
+
+    const perkTiers = window.gameData.perks.perkTiers;
+    const tier = weightedRandom(perkTiers);
+    const perksOfTier = window.gameData.perks.perks.filter(p => p.tier === tier);
+
+    return perksOfTier.length > 0 ? getRandomElement(perksOfTier).id : null;
+}
+
+/**
+ * Get perk by ID
+ */
+function getPerkById(perkId) {
+    if (!window.gameData || !window.gameData.perks) return null;
+    return window.gameData.perks.perks.find(p => p.id === perkId);
+}
+
+/**
+ * Get personality by ID
+ */
+function getPersonalityById(personalityId) {
+    if (!window.gameData || !window.gameData.personalities) return null;
+    return window.gameData.personalities.personalities.find(p => p.id === personalityId);
+}
+
+/**
+ * Generate hero with full anime system
+ */
+function generateHero(summonType = 'basic') {
+    if (!window.gameData) throw new Error('Game data not loaded');
+
+    // Basic info
+    const firstName = getRandomElement(window.gameData.heroNames.firstNames);
+    const lastName = getRandomElement(window.gameData.heroNames.lastNames);
+    const heroClass = getRandomElement(window.gameData.classes.classes);
+
+    // Anime features
+    const rarity = determineRarity(summonType, currentUser.summonPity[summonType] || 0);
+    const personality = getRandomElement(window.gameData.personalities.personalities);
+
+    // Rarity stat multipliers
+    const rarityMultipliers = {
+        common: 1.0,
+        uncommon: 1.2,
+        rare: 1.5,
+        epic: 2.0,
+        legendary: 3.0,
+        mythical: 5.0
+    };
+    const multiplier = rarityMultipliers[rarity] || 1.0;
+
+    // Generate starting perks (2 random perks)
+    const startingPerks = [
+        generateRandomPerk(),
+        generateRandomPerk()
+    ];
+
+    const hero = {
+        id: generateId(),
+        name: `${firstName} ${lastName}`,
+        class: heroClass.id,
+        rarity: rarity,
+        personality: personality.id,
+        level: 1,
+        exp: 0,
+        exp_to_next: 100,
+        awakeningTier: 1,
+        stats: {
+            strength: Math.floor((10 + (heroClass.bonuses.strength || 0)) * multiplier),
+            defense: Math.floor((10 + (heroClass.bonuses.defense || 0)) * multiplier),
+            health: Math.floor((50 + (heroClass.bonuses.health || 0)) * multiplier),
+            maxHealth: Math.floor((50 + (heroClass.bonuses.health || 0)) * multiplier),
+            intelligence: Math.floor((10 + (heroClass.bonuses.intelligence || 0)) * multiplier),
+            agility: Math.floor((10 + (heroClass.bonuses.agility || 0)) * multiplier),
+            wisdom: Math.floor((10 + (heroClass.bonuses.wisdom || 0)) * multiplier),
+            luck: Math.floor((10 + (heroClass.bonuses.luck || 0)) * multiplier),
+            classEmoji: heroClass.emoji
+        },
+        perks: {
+            slot1: startingPerks[0],
+            slot2: startingPerks[1],
+            slot3: null, // Unlocked at 100g
+            slot4: null, // Unlocked at 300g
+            slot5: null  // Unlocked at 800g
+        },
+        perkSlotsUnlocked: 2,
+        current_activity: null,
+        activity_start_time: null,
+        current_zone: 'whispering_woods',
+        activity_queue: [],
+        equipment: {
+            weapon: null,
+            armor: null,
+            accessory: null
+        }
+    };
+
+    // Apply perk effects to base stats
+    applyPerkEffects(hero);
+
+    return hero;
+}
+
+/**
+ * Apply awakening bonuses AND perk effects to hero stats
+ */
+function applyAwakeningAndPerkEffects(hero) {
+    if (!hero.perks) return;
+
+    const heroClass = window.gameData?.classes?.classes?.find(c => c.id === hero.class);
+    if (!heroClass) return;
+
+    // Rarity multipliers
+    const rarityMultipliers = {
+        common: 1.0,
+        uncommon: 1.2,
+        rare: 1.5,
+        epic: 2.0,
+        legendary: 3.0,
+        mythical: 5.0
+    };
+    const rarityMultiplier = rarityMultipliers[hero.rarity] || 1.0;
+
+    // Awakening multipliers (1.0, 1.2, 1.4, 1.6, 1.8)
+    const awakeningTier = hero.awakeningTier || 1;
+    const awakeningMultiplier = 1.0 + (0.2 * (awakeningTier - 1));
+
+    // Calculate base stats with rarity and awakening
+    const totalMultiplier = rarityMultiplier * awakeningMultiplier;
+
+    const baseStats = {
+        strength: Math.floor((10 + (heroClass.bonuses.strength || 0)) * totalMultiplier),
+        defense: Math.floor((10 + (heroClass.bonuses.defense || 0)) * totalMultiplier),
+        health: Math.floor((50 + (heroClass.bonuses.health || 0)) * totalMultiplier),
+        maxHealth: Math.floor((50 + (heroClass.bonuses.health || 0)) * totalMultiplier),
+        intelligence: Math.floor((10 + (heroClass.bonuses.intelligence || 0)) * totalMultiplier),
+        agility: Math.floor((10 + (heroClass.bonuses.agility || 0)) * totalMultiplier),
+        wisdom: Math.floor((10 + (heroClass.bonuses.wisdom || 0)) * totalMultiplier),
+        luck: Math.floor((10 + (heroClass.bonuses.luck || 0)) * totalMultiplier)
+    };
+
+    // Apply base stats first
+    Object.keys(baseStats).forEach(stat => {
+        hero.stats[stat] = baseStats[stat];
+    });
+
+    // Apply perk bonuses on top
+    Object.values(hero.perks).forEach(perkId => {
+        if (!perkId) return;
+        const perk = getPerkById(perkId);
+        if (!perk || !perk.effect) return;
+
+        if (perk.effect.stat && perk.effect.stat !== 'all') {
+            const statName = perk.effect.stat;
+            if (baseStats[statName] !== undefined) {
+                hero.stats[statName] = Math.floor(baseStats[statName] * (1 + perk.effect.value));
+            }
+        } else if (perk.effect.stat === 'all') {
+            Object.keys(baseStats).forEach(stat => {
+                hero.stats[stat] = Math.floor(baseStats[stat] * (1 + perk.effect.value));
+            });
+        }
+    });
+}
+
+/**
+ * Apply perk effects to hero stats (wrapper for backwards compatibility)
+ */
+function applyPerkEffects(hero) {
+    applyAwakeningAndPerkEffects(hero);
 }
 
 /**
@@ -400,19 +751,29 @@ function updateHeroesList(heroes) {
         if (!hero.current_zone) hero.current_zone = 'whispering_woods';
         if (!hero.activity_queue) hero.activity_queue = [];
         if (!hero.equipment) hero.equipment = { weapon: null, armor: null, accessory: null };
+        if (!hero.rarity) hero.rarity = 'common';
+        if (!hero.personality) hero.personality = 'brave';
+        if (!hero.awakeningTier) hero.awakeningTier = 1;
+        if (!hero.perks) hero.perks = { slot1: null, slot2: null, slot3: null, slot4: null, slot5: null };
+        if (!hero.perkSlotsUnlocked) hero.perkSlotsUnlocked = 2;
 
         const stats = hero.stats;
+        const heroClass = window.gameData.classes.classes.find(c => c.id === hero.class);
+        const personality = getPersonalityById(hero.personality);
         const currentActivity = hero.current_activity ? getActivityById(hero.current_activity) : null;
-        const currentZone = getZoneById(hero.current_zone);
 
         const activityText = currentActivity
             ? `${currentActivity.emoji} ${currentActivity.name}...`
             : '💤 Idle';
 
+        // Rarity display
+        const rarityStars = '⭐'.repeat(hero.awakeningTier);
+        const rarityClass = `rarity-${hero.rarity}`;
+
         // Generate zone selection dropdown
         const zoneOptions = currentUser.unlockedZones.map(zoneId => {
             const zone = getZoneById(zoneId);
-            if (!zone) return ''; // Skip if zone data not found
+            if (!zone) return '';
             const selected = zoneId === hero.current_zone ? 'selected' : '';
             return `<option value="${zoneId}" ${selected}>${zone.emoji} ${zone.name} (Lv ${zone.levelRequired}+)</option>`;
         }).filter(opt => opt).join('');
@@ -421,6 +782,45 @@ function updateHeroesList(heroes) {
         const nextQueuedActivity = hero.activity_queue && hero.activity_queue.length > 0
             ? hero.activity_queue[0]
             : null;
+
+        // Generate perks display
+        const perkUnlockCosts = [0, 0, 100, 300, 800]; // slot1 and slot2 are free
+        const perksHTML = Object.keys(hero.perks).map((slotKey, index) => {
+            const perkId = hero.perks[slotKey];
+            const perk = getPerkById(perkId);
+            const slotNum = index + 1;
+            const isLocked = slotNum > hero.perkSlotsUnlocked;
+            const unlockCost = perkUnlockCosts[index];
+
+            if (isLocked) {
+                return `
+                    <div class="perk-slot locked">
+                        <button class="btn-perk-unlock" onclick="window.unlockPerkSlot('${hero.id}', ${slotNum}, ${unlockCost})">
+                            🔒 Unlock (${unlockCost}g)
+                        </button>
+                    </div>
+                `;
+            } else if (perk) {
+                return `
+                    <div class="perk-slot perk-tier-${perk.tier}">
+                        <span class="perk-info" title="${perk.description}">
+                            ${perk.emoji} ${perk.name}
+                        </span>
+                        <button class="btn-perk-reroll" onclick="window.rerollPerk('${hero.id}', '${slotKey}')">
+                            🎲 50g
+                        </button>
+                    </div>
+                `;
+            } else {
+                return `
+                    <div class="perk-slot empty">
+                        <button class="btn-perk-reroll" onclick="window.rerollPerk('${hero.id}', '${slotKey}')">
+                            🎲 Roll Perk (50g)
+                        </button>
+                    </div>
+                `;
+            }
+        }).join('');
 
         // Generate activity buttons with progress bars
         const activityButtons = window.gameData && window.gameData.activities
@@ -449,8 +849,24 @@ function updateHeroesList(heroes) {
             : '';
 
         return `
-            <div class="hero-card" data-hero-id="${hero.id}">
-                <h3>${stats.classEmoji} ${hero.name} - Lv ${hero.level}</h3>
+            <div class="hero-card ${rarityClass}" data-hero-id="${hero.id}">
+                <div class="hero-header">
+                    <h3>
+                        ${stats.classEmoji} ${hero.name} ${rarityStars}
+                        <span class="hero-level">Lv ${hero.level}</span>
+                    </h3>
+                    <div class="hero-meta">
+                        <span class="hero-rarity">${hero.rarity.toUpperCase()}</span>
+                        <span class="hero-personality">${personality ? personality.emoji : ''} ${personality ? personality.name : ''}</span>
+                    </div>
+                    <div class="hero-class">
+                        ${heroClass ? heroClass.name : ''}
+                        <button class="btn-class-reroll" onclick="window.rerollClass('${hero.id}')">
+                            🔄 Change Class (100g)
+                        </button>
+                    </div>
+                </div>
+
                 <div class="hero-stats">
                     <div class="hero-stat">
                         <span>⚔️ STR:</span>
@@ -469,6 +885,14 @@ function updateHeroesList(heroes) {
                         <span>${hero.exp}/${hero.exp_to_next}</span>
                     </div>
                 </div>
+
+                <div class="hero-perks">
+                    <strong>🎴 Perks:</strong>
+                    <div class="perks-grid">
+                        ${perksHTML}
+                    </div>
+                </div>
+
                 <div class="hero-activity">
                     <strong>Status:</strong> ${activityText}
                     ${nextQueuedActivity ? `<span class="next-activity">→ Next: ${getActivityById(nextQueuedActivity)?.emoji || ''}</span>` : ''}
@@ -481,6 +905,14 @@ function updateHeroesList(heroes) {
                 </div>
                 <div class="hero-actions">
                     ${activityButtons}
+                </div>
+                <div class="hero-awakening" style="margin-top: var(--spacing-sm); padding: var(--spacing-xs); background: rgba(255, 215, 0, 0.1); border-radius: 4px;">
+                    <button class="btn btn-sm" style="width: 100%;" onclick="window.awakenHero('${hero.id}')">
+                        ⭐ Awaken (Tier ${hero.awakeningTier}/4)
+                    </button>
+                    <div style="font-size: 0.7rem; color: var(--text-secondary); text-align: center; margin-top: 0.25rem;">
+                        ${getDuplicateCount(hero.name)} duplicates available
+                    </div>
                 </div>
             </div>
         `;
@@ -982,6 +1414,174 @@ window.changeHeroZone = function(heroId, zoneId) {
     hero.current_zone = zoneId;
     addLocalLog(`🗺️ ${hero.name} is now exploring ${zone.emoji} ${zone.name}`, 'info');
     updateHeroesList(currentUser.heroes);
+    saveLocalGameState();
+};
+
+/**
+ * Global helper: Unlock perk slot
+ */
+window.unlockPerkSlot = function(heroId, slotNum, cost) {
+    const hero = currentUser.heroes.find(h => h.id === heroId);
+    if (!hero) return;
+
+    if (currentUser.gold < cost) {
+        alert(`Not enough gold! Need ${cost} gold to unlock this slot.`);
+        return;
+    }
+
+    currentUser.gold -= cost;
+    hero.perkSlotsUnlocked = slotNum;
+
+    addLocalLog(`🔓 ${hero.name} unlocked perk slot ${slotNum}!`, 'success');
+    updateHeroesList(currentUser.heroes);
+    saveLocalGameState();
+};
+
+/**
+ * Global helper: Reroll perk
+ */
+window.rerollPerk = function(heroId, slotKey) {
+    const REROLL_COST = 50;
+    const hero = currentUser.heroes.find(h => h.id === heroId);
+    if (!hero) return;
+
+    if (currentUser.gold < REROLL_COST) {
+        alert(`Not enough gold! Need ${REROLL_COST} gold to reroll.`);
+        return;
+    }
+
+    currentUser.gold -= REROLL_COST;
+
+    // Generate new random perk
+    const newPerkId = generateRandomPerk();
+    const newPerk = getPerkById(newPerkId);
+
+    hero.perks[slotKey] = newPerkId;
+
+    // Recalculate stats with new perk
+    applyPerkEffects(hero);
+
+    if (newPerk) {
+        addLocalLog(`🎲 ${hero.name} rolled ${newPerk.emoji} ${newPerk.name} (${newPerk.tier})!`, newPerk.tier === 'legendary' ? 'success' : 'info');
+    }
+
+    updateHeroesList(currentUser.heroes);
+    saveLocalGameState();
+};
+
+/**
+ * Global helper: Reroll class
+ */
+window.rerollClass = function(heroId) {
+    const REROLL_COST = 100;
+    const hero = currentUser.heroes.find(h => h.id === heroId);
+    if (!hero) return;
+
+    if (currentUser.gold < REROLL_COST) {
+        alert(`Not enough gold! Need ${REROLL_COST} gold to change class.`);
+        return;
+    }
+
+    const confirmChange = confirm(`Change ${hero.name}'s class? This will recalculate their stats. Cost: ${REROLL_COST} gold`);
+    if (!confirmChange) return;
+
+    currentUser.gold -= REROLL_COST;
+
+    // Get new random class
+    const oldClass = window.gameData.classes.classes.find(c => c.id === hero.class);
+    const newClass = getRandomElement(window.gameData.classes.classes);
+
+    hero.class = newClass.id;
+    hero.stats.classEmoji = newClass.emoji;
+
+    // Recalculate stats
+    applyPerkEffects(hero);
+
+    addLocalLog(`🔄 ${hero.name} changed from ${oldClass.name} to ${newClass.name}!`, 'success');
+    updateHeroesList(currentUser.heroes);
+    updateUIDisplays();
+    saveLocalGameState();
+};
+
+/**
+ * Helper: Get count of duplicates in Guild Hall
+ */
+function getDuplicateCount(heroName) {
+    return currentUser.guildHall.filter(h => h.name === heroName).length;
+}
+
+/**
+ * Global helper: Awaken hero using duplicates
+ */
+window.awakenHero = function(heroId) {
+    const hero = currentUser.heroes.find(h => h.id === heroId);
+    if (!hero) {
+        alert('Hero not found!');
+        return;
+    }
+
+    // Check if already max awakening
+    if (hero.awakeningTier >= 4) {
+        alert(`${hero.name} is already at max awakening tier!`);
+        return;
+    }
+
+    // Find duplicates in Guild Hall
+    const duplicates = currentUser.guildHall.filter(h => h.name === hero.name);
+
+    // Determine duplicates needed based on current tier
+    const duplicatesNeeded = hero.awakeningTier; // Tier 1→2 needs 1, Tier 2→3 needs 2, Tier 3→4 needs 3
+
+    if (duplicates.length < duplicatesNeeded) {
+        alert(`Need ${duplicatesNeeded} duplicate(s) of ${hero.name} to awaken to Tier ${hero.awakeningTier + 1}. You have ${duplicates.length}.`);
+        return;
+    }
+
+    // Confirm awakening
+    const confirm = window.confirm(
+        `Awaken ${hero.name} to Tier ${hero.awakeningTier + 1}?\n\n` +
+        `Cost: ${duplicatesNeeded} duplicate(s)\n` +
+        `Bonus: +${20 * hero.awakeningTier}% to all stats\n` +
+        (hero.awakeningTier === 2 ? 'Unlock: Perk Slot 3\n' : '') +
+        (hero.awakeningTier === 3 ? 'Unlock: Perk Slot 4\n' : '')
+    );
+
+    if (!confirm) return;
+
+    // Consume duplicates from Guild Hall
+    for (let i = 0; i < duplicatesNeeded; i++) {
+        const duplicateIndex = currentUser.guildHall.findIndex(h => h.name === hero.name);
+        if (duplicateIndex !== -1) {
+            currentUser.guildHall.splice(duplicateIndex, 1);
+        }
+    }
+
+    // Increase awakening tier
+    hero.awakeningTier++;
+
+    // Unlock perk slots based on tier
+    if (hero.awakeningTier === 3 && hero.perkSlotsUnlocked < 3) {
+        hero.perkSlotsUnlocked = 3;
+        addLocalLog(`🔓 ${hero.name} unlocked Perk Slot 3 through awakening!`, 'success');
+    }
+    if (hero.awakeningTier === 4 && hero.perkSlotsUnlocked < 4) {
+        hero.perkSlotsUnlocked = 4;
+        addLocalLog(`🔓 ${hero.name} unlocked Perk Slot 4 through awakening!`, 'success');
+    }
+
+    // Recalculate stats with awakening bonus
+    applyAwakeningAndPerkEffects(hero);
+
+    // Update statistics
+    currentUser.statistics.heroesAwakened++;
+
+    addLocalLog(
+        `⭐ ${hero.name} awakened to Tier ${hero.awakeningTier}! All stats increased by ${20 * (hero.awakeningTier - 1)}%!`,
+        'success'
+    );
+
+    updateHeroesList(currentUser.heroes);
+    updateUIDisplays();
     saveLocalGameState();
 };
 

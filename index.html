@@ -72,8 +72,69 @@
                         <span class="stat-label">Heroes:</span>
                         <span class="stat-value" id="hero-count">0</span>
                     </div>
+                    <div class="stat">
+                        <span class="stat-label">Guild Hall:</span>
+                        <span class="stat-value" id="guild-hall-count">0</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Soul Essence:</span>
+                        <span class="stat-value" id="soul-essence">0</span>
+                    </div>
                 </div>
-                <button class="btn btn-primary" id="summon-btn">Summon Hero (50 Gold)</button>
+            </section>
+
+            <!-- Summoning Portal -->
+            <section class="panel summon-panel">
+                <h2>✨ Summoning Portal</h2>
+                <div class="summon-grid">
+                    <!-- Daily Free Summon -->
+                    <div class="summon-option summon-free">
+                        <div class="summon-header">
+                            <h3>🎁 Daily Free</h3>
+                            <span class="summon-cost">FREE</span>
+                        </div>
+                        <p class="summon-desc">One free summon per day</p>
+                        <div class="summon-rates">Common: 70% | Uncommon: 25% | Rare: 5%</div>
+                        <button class="btn btn-primary" id="daily-free-btn">Daily Summon</button>
+                        <div class="summon-cooldown" id="daily-cooldown" style="display: none;"></div>
+                    </div>
+
+                    <!-- Basic Summon -->
+                    <div class="summon-option summon-basic">
+                        <div class="summon-header">
+                            <h3>⚪ Basic Summon</h3>
+                            <span class="summon-cost">50 Gold</span>
+                        </div>
+                        <p class="summon-desc">Standard summoning ritual</p>
+                        <div class="summon-rates">Common: 55% | Uncommon: 35% | Rare: 10%</div>
+                        <button class="btn btn-primary" id="basic-summon-btn">Summon</button>
+                        <div class="pity-counter">Pity: <span id="basic-pity">0</span>/10</div>
+                    </div>
+
+                    <!-- Advanced Summon -->
+                    <div class="summon-option summon-advanced">
+                        <div class="summon-header">
+                            <h3>💠 Advanced Summon</h3>
+                            <span class="summon-cost">150 Gold</span>
+                        </div>
+                        <p class="summon-desc">Enhanced summoning circle</p>
+                        <div class="summon-rates">Uncommon: 60% | Rare: 30% | Epic: 9% | Legendary: 1%</div>
+                        <button class="btn btn-primary" id="advanced-summon-btn">Summon</button>
+                        <div class="pity-counter">Pity: <span id="advanced-pity">0</span>/10</div>
+                    </div>
+
+                    <!-- Elite Summon -->
+                    <div class="summon-option summon-elite">
+                        <div class="summon-header">
+                            <h3>🌟 Elite Summon</h3>
+                            <span class="summon-cost">400 Gold</span>
+                        </div>
+                        <p class="summon-desc">Legendary summoning ritual</p>
+                        <div class="summon-rates">Rare: 50% | Epic: 35% | Legendary: 13% | Mythical: 2%</div>
+                        <button class="btn btn-primary" id="elite-summon-btn">Summon</button>
+                        <div class="pity-counter">Pity: <span id="elite-pity">0</span>/10</div>
+                    </div>
+                </div>
             </section>
 
             <!-- Zones Panel -->
