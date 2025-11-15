@@ -872,7 +872,7 @@ body {
 .hero-card.rarity-mythical {
     border-left-color: var(--rarity-mythical);
     border-left-width: 8px;
-    background: linear-gradient(135deg, #fff0f5 0%, #ffe8f0 100%);
+    background: linear-gradient(135deg, #fffdf8 0%, #fff8f0 100%);
     box-shadow: 0 10px 30px rgba(255, 23, 68, 0.6);
     position: relative;
     animation: mythicalGlow 1.5s ease-in-out infinite;
@@ -1129,6 +1129,19 @@ body {
     background: #f5f5f5;
     border-left-color: #ccc;
     opacity: 0.7;
+}
+
+.perk-slot.perk-locked {
+    border: 2px solid var(--accent-gold);
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+}
+
+.btn-lock {
+    background: var(--text-secondary) !important;
+}
+
+.btn-unlock {
+    background: var(--accent-gold) !important;
 }
 
 .perk-info {

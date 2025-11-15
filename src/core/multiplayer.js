@@ -498,16 +498,16 @@ function determineRarity(summonType = 'basic', pityCounter = 0) {
             uncommon: 60,
             rare: 30,
             epic: 9,
-            legendary: 1,
-            mythical: 0
+            legendary: 0.8,
+            mythical: 0.2
         },
         elite: {
             common: 0,
             uncommon: 0,
-            rare: 50,
-            epic: 35,
-            legendary: 13,
-            mythical: 2
+            rare: 55,
+            epic: 36,
+            legendary: 8.5,
+            mythical: 0.5
         }
     };
 
@@ -602,6 +602,13 @@ function generateHero(summonType = 'basic') {
             slot3: null, // Unlocked at 100g
             slot4: null, // Unlocked at 300g
             slot5: null  // Unlocked at 800g
+        },
+        perkLocks: {
+            slot1: false,
+            slot2: false,
+            slot3: false,
+            slot4: false,
+            slot5: false
         },
         perkSlotsUnlocked: 2,
         current_activity: null,
@@ -803,14 +810,18 @@ function updateHeroesList(heroes) {
                     </div>
                 `;
             } else if (perk) {
+                const isLocked = hero.perkLocks && hero.perkLocks[slotKey];
                 return `
-                    <div class="perk-slot perk-tier-${perk.tier}">
-                        <span class="perk-info" title="${perk.description}">
-                            ${perk.emoji} ${perk.name}
-                        </span>
-                        <button class="btn-perk-reroll" onclick="window.rerollPerk('${hero.id}', '${slotKey}')">
-                            🎲 50g
-                        </button>
+                    <div class="perk-slot perk-tier-${perk.tier} ${isLocked ? 'perk-locked' : ''}">
+                        <div class="perk-info">
+                            <div class="perk-name">${perk.emoji} ${perk.name}</div>
+                            <div class="perk-desc">${perk.description}</div>
+                        </div>
+                        <div class="perk-actions">
+                            <button class="btn-perk-action ${isLocked ? 'btn-unlock' : 'btn-lock'}" onclick="window.togglePerkLock('${hero.id}', '${slotKey}')">
+                                ${isLocked ? '🔒' : '🔓'}
+                            </button>
+                        </div>
                     </div>
                 `;
             } else {
@@ -893,6 +904,9 @@ function updateHeroesList(heroes) {
                     <div class="perks-grid">
                         ${perksHTML}
                     </div>
+                    <button class="btn btn-sm" style="width: 100%; margin-top: 0.5rem;" onclick="window.rerollAllPerks('${hero.id}')">
+                        🎲 Reroll All Unlocked (${calculateRerollCost(hero)}g)
+                    </button>
                 </div>
 
                 <div class="hero-activity">
@@ -1140,6 +1154,41 @@ function displayActivities(activities) {
 }
 
 /**
+ * Resume in-progress activities after page refresh
+ */
+function resumeInProgressActivities() {
+    if (!currentUser || !currentUser.heroes) return;
+
+    const now = Date.now();
+    currentUser.heroes.forEach(hero => {
+        if (hero.current_activity && hero.activity_start_time) {
+            const activityData = getActivityById(hero.current_activity);
+            if (!activityData) {
+                // Clear invalid activity
+                hero.current_activity = null;
+                hero.activity_start_time = null;
+                return;
+            }
+
+            const activityDuration = activityData.duration;
+            const timeSinceStart = now - hero.activity_start_time;
+            const timeRemaining = activityDuration - timeSinceStart;
+
+            if (timeRemaining > 0) {
+                // Resume the activity timer
+                const timerId = setTimeout(() => {
+                    completeHeroActivity(hero);
+                }, timeRemaining);
+                heroTimers[hero.id] = timerId;
+            } else {
+                // Activity should be completed now
+                completeHeroActivity(hero);
+            }
+        }
+    });
+}
+
+/**
  * Process offline progression
  */
 function processOfflineProgress() {
@@ -1152,13 +1201,22 @@ function processOfflineProgress() {
     // Cap offline progression at 12 hours
     const effectiveHours = Math.min(hoursOffline, 12);
 
-    if (effectiveHours < 0.1) return; // Less than 6 minutes, skip
+    if (effectiveHours < 0.1) {
+        // Less than 6 minutes, just resume activities without rewards
+        resumeInProgressActivities();
+        return;
+    }
 
     // Process each hero's ongoing activity
     currentUser.heroes.forEach(hero => {
         if (hero.current_activity && hero.activity_start_time) {
             const activityData = getActivityById(hero.current_activity);
-            if (!activityData) return;
+            if (!activityData) {
+                // Clear invalid activity
+                hero.current_activity = null;
+                hero.activity_start_time = null;
+                return;
+            }
 
             const activityDuration = activityData.duration;
             const timeSinceStart = now - hero.activity_start_time;
@@ -1187,6 +1245,24 @@ function processOfflineProgress() {
                     `⏰ While you were away: ${hero.name} completed ${activityData.emoji} ${activityData.name} ${cappedCompletions}x (+${goldGained} gold, +${expGained} exp)`,
                     'info'
                 );
+
+                // Clear activity after offline completion
+                hero.current_activity = null;
+                hero.activity_start_time = null;
+            } else {
+                // Activity still in progress - calculate remaining time and resume
+                const timeRemaining = activityDuration - timeSinceStart;
+                if (timeRemaining > 0) {
+                    // Resume the activity timer
+                    const timerId = setTimeout(() => {
+                        completeHeroActivity(hero);
+                    }, timeRemaining);
+                    heroTimers[hero.id] = timerId;
+                } else {
+                    // Should have completed, clear it
+                    hero.current_activity = null;
+                    hero.activity_start_time = null;
+                }
             }
         }
     });
@@ -1559,6 +1635,110 @@ window.changeHeroZone = function(heroId, zoneId) {
     hero.current_zone = zoneId;
     addLocalLog(`🗺️ ${hero.name} is now exploring ${zone.emoji} ${zone.name}`, 'info');
     updateHeroesList(currentUser.heroes);
+    saveLocalGameState();
+};
+
+/**
+ * Calculate reroll cost based on locked perks
+ */
+function calculateRerollCost(hero) {
+    if (!hero.perkLocks) return 50; // Base cost
+
+    const lockedCount = Object.values(hero.perkLocks).filter(locked => locked).length;
+    const baseCost = 50;
+    const lockPenalty = lockedCount * 25; // +25g per locked perk
+
+    return baseCost + lockPenalty;
+}
+
+/**
+ * Global helper: Toggle perk lock
+ */
+window.togglePerkLock = function(heroId, slotKey) {
+    const hero = currentUser.heroes.find(h => h.id === heroId);
+    if (!hero) return;
+
+    if (!hero.perkLocks) {
+        hero.perkLocks = {
+            slot1: false,
+            slot2: false,
+            slot3: false,
+            slot4: false,
+            slot5: false
+        };
+    }
+
+    hero.perkLocks[slotKey] = !hero.perkLocks[slotKey];
+
+    updateHeroesList(currentUser.heroes);
+    saveLocalGameState();
+};
+
+/**
+ * Global helper: Reroll all unlocked perks
+ */
+window.rerollAllPerks = function(heroId) {
+    const hero = currentUser.heroes.find(h => h.id === heroId);
+    if (!hero) return;
+
+    const rerollCost = calculateRerollCost(hero);
+
+    if (currentUser.gold < rerollCost) {
+        alert(`Not enough gold! Need ${rerollCost} gold to reroll all unlocked perks.`);
+        return;
+    }
+
+    // Ensure perkLocks exists
+    if (!hero.perkLocks) {
+        hero.perkLocks = {
+            slot1: false,
+            slot2: false,
+            slot3: false,
+            slot4: false,
+            slot5: false
+        };
+    }
+
+    // Count how many perks will be rerolled
+    let rerolledCount = 0;
+    const newPerks = [];
+
+    Object.keys(hero.perks).forEach((slotKey, index) => {
+        const slotNum = index + 1;
+        const isUnlocked = slotNum <= hero.perkSlotsUnlocked;
+        const isLocked = hero.perkLocks[slotKey];
+        const hasPerk = hero.perks[slotKey] !== null;
+
+        if (isUnlocked && !isLocked && hasPerk) {
+            // Reroll this perk
+            const newPerkId = generateRandomPerk();
+            hero.perks[slotKey] = newPerkId;
+            rerolledCount++;
+            const perk = getPerkById(newPerkId);
+            if (perk) {
+                newPerks.push(`${perk.emoji} ${perk.name}`);
+            }
+        }
+    });
+
+    if (rerolledCount === 0) {
+        alert('No unlocked perks to reroll! All perks are either locked or empty.');
+        return;
+    }
+
+    // Deduct cost
+    currentUser.gold -= rerollCost;
+
+    // Recalculate stats with new perks
+    applyAwakeningAndPerkEffects(hero);
+
+    addLocalLog(
+        `🎲 ${hero.name} rerolled ${rerolledCount} perk(s): ${newPerks.join(', ')}`,
+        'success'
+    );
+
+    updateHeroesList(currentUser.heroes);
+    updateUIDisplays();
     saveLocalGameState();
 };
 
