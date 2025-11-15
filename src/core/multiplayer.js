@@ -178,8 +178,25 @@ function updateActivityProgress() {
             const activity = getActivityById(hero.current_activity);
             if (!activity) return;
 
+            // Calculate activity duration with personality effects (same as startHeroActivity)
+            let activityDuration = activity.duration;
+            const personality = getPersonalityById(hero.personality);
+            if (personality && personality.effects) {
+                const effects = personality.effects;
+
+                // Activity speed bonus (faster completion)
+                if (effects.activity_speed_bonus) {
+                    activityDuration = Math.floor(activityDuration / (1 + effects.activity_speed_bonus));
+                }
+
+                // Activity speed penalty (slower completion)
+                if (effects.activity_speed_penalty) {
+                    activityDuration = Math.floor(activityDuration / (1 + effects.activity_speed_penalty));
+                }
+            }
+
             const elapsed = Date.now() - hero.activity_start_time;
-            const progress = Math.min((elapsed / activity.duration) * 100, 100);
+            const progress = Math.min((elapsed / activityDuration) * 100, 100);
 
             // Store progress on hero object for UI
             hero.activity_progress = progress;
@@ -1170,7 +1187,23 @@ function resumeInProgressActivities() {
                 return;
             }
 
-            const activityDuration = activityData.duration;
+            // Calculate activity duration with personality effects
+            let activityDuration = activityData.duration;
+            const personality = getPersonalityById(hero.personality);
+            if (personality && personality.effects) {
+                const effects = personality.effects;
+
+                // Activity speed bonus (faster completion)
+                if (effects.activity_speed_bonus) {
+                    activityDuration = Math.floor(activityDuration / (1 + effects.activity_speed_bonus));
+                }
+
+                // Activity speed penalty (slower completion)
+                if (effects.activity_speed_penalty) {
+                    activityDuration = Math.floor(activityDuration / (1 + effects.activity_speed_penalty));
+                }
+            }
+
             const timeSinceStart = now - hero.activity_start_time;
             const timeRemaining = activityDuration - timeSinceStart;
 
@@ -1218,7 +1251,23 @@ function processOfflineProgress() {
                 return;
             }
 
-            const activityDuration = activityData.duration;
+            // Calculate activity duration with personality effects
+            let activityDuration = activityData.duration;
+            const personality = getPersonalityById(hero.personality);
+            if (personality && personality.effects) {
+                const effects = personality.effects;
+
+                // Activity speed bonus (faster completion)
+                if (effects.activity_speed_bonus) {
+                    activityDuration = Math.floor(activityDuration / (1 + effects.activity_speed_bonus));
+                }
+
+                // Activity speed penalty (slower completion)
+                if (effects.activity_speed_penalty) {
+                    activityDuration = Math.floor(activityDuration / (1 + effects.activity_speed_penalty));
+                }
+            }
+
             const timeSinceStart = now - hero.activity_start_time;
 
             // Calculate how many times activity completed
@@ -1227,8 +1276,30 @@ function processOfflineProgress() {
             if (completions > 0) {
                 // Apply rewards (capped at reasonable amount)
                 const cappedCompletions = Math.min(completions, 50);
-                const goldGained = activityData.goldReward * cappedCompletions;
-                const expGained = activityData.expReward * cappedCompletions;
+                let goldGained = activityData.goldReward * cappedCompletions;
+                let expGained = activityData.expReward * cappedCompletions;
+
+                // Apply personality effects to offline rewards
+                if (personality && personality.effects) {
+                    const effects = personality.effects;
+
+                    if (effects.gold_bonus) {
+                        goldGained = Math.floor(goldGained * (1 + effects.gold_bonus));
+                    }
+                    if (effects.gold_penalty) {
+                        goldGained = Math.floor(goldGained * (1 + effects.gold_penalty));
+                    }
+                    if (effects.exp_bonus) {
+                        expGained = Math.floor(expGained * (1 + effects.exp_bonus));
+                    }
+                    if (effects.exp_penalty) {
+                        expGained = Math.floor(expGained * (1 + effects.exp_penalty));
+                    }
+                    if (effects.all_rewards_bonus) {
+                        goldGained = Math.floor(goldGained * (1 + effects.all_rewards_bonus));
+                        expGained = Math.floor(expGained * (1 + effects.all_rewards_bonus));
+                    }
+                }
 
                 currentUser.gold += goldGained;
                 hero.exp += expGained;
@@ -1327,10 +1398,27 @@ function startHeroActivity(hero, activityId) {
     updateHeroesList(currentUser.heroes);
     saveLocalGameState();
 
+    // Calculate activity duration with personality effects
+    let activityDuration = activity.duration;
+    const personality = getPersonalityById(hero.personality);
+    if (personality && personality.effects) {
+        const effects = personality.effects;
+
+        // Activity speed bonus (faster completion)
+        if (effects.activity_speed_bonus) {
+            activityDuration = Math.floor(activityDuration / (1 + effects.activity_speed_bonus));
+        }
+
+        // Activity speed penalty (slower completion)
+        if (effects.activity_speed_penalty) {
+            activityDuration = Math.floor(activityDuration / (1 + effects.activity_speed_penalty));
+        }
+    }
+
     // Set timer to complete activity
     const timerId = setTimeout(() => {
         completeHeroActivity(hero);
-    }, activity.duration);
+    }, activityDuration);
 
     heroTimers[hero.id] = timerId;
 
@@ -1365,6 +1453,48 @@ function completeHeroActivity(hero) {
     if (zone) {
         goldReward = Math.floor(goldReward * (zone.goldMultiplier || 1));
         expReward = Math.floor(expReward * (zone.expMultiplier || 1));
+    }
+
+    // Apply personality effects
+    const personality = getPersonalityById(hero.personality);
+    if (personality && personality.effects) {
+        const effects = personality.effects;
+
+        // Gold bonus/penalty
+        if (effects.gold_bonus) {
+            goldReward = Math.floor(goldReward * (1 + effects.gold_bonus));
+        }
+        if (effects.gold_penalty) {
+            goldReward = Math.floor(goldReward * (1 + effects.gold_penalty));
+        }
+
+        // Exp bonus/penalty
+        if (effects.exp_bonus) {
+            expReward = Math.floor(expReward * (1 + effects.exp_bonus));
+        }
+        if (effects.exp_penalty) {
+            expReward = Math.floor(expReward * (1 + effects.exp_penalty));
+        }
+
+        // All rewards bonus (affects both gold and exp)
+        if (effects.all_rewards_bonus) {
+            goldReward = Math.floor(goldReward * (1 + effects.all_rewards_bonus));
+            expReward = Math.floor(expReward * (1 + effects.all_rewards_bonus));
+        }
+
+        // Random variance (can increase or decrease rewards randomly)
+        if (effects.random_variance) {
+            const variance = (Math.random() * 2 - 1) * effects.random_variance; // -variance to +variance
+            goldReward = Math.floor(goldReward * (1 + variance));
+            expReward = Math.floor(expReward * (1 + variance));
+        }
+
+        // Failure chance (chance to get no rewards)
+        if (effects.failure_chance && Math.random() < effects.failure_chance) {
+            goldReward = 0;
+            expReward = 0;
+            addLocalLog(`💥 ${hero.name}'s reckless approach backfired! No rewards this time.`, 'warning');
+        }
     }
 
     // Apply rewards
@@ -1486,17 +1616,62 @@ function gatherMaterialsForHero(hero, activity, iterations = 1) {
 
     const materialsGathered = [];
 
+    // Get personality effects
+    const personality = getPersonalityById(hero.personality);
+    let dropRateModifier = 1.0;
+    let amountModifier = 1.0;
+    let rareBonusChance = 0;
+
+    if (personality && personality.effects) {
+        const effects = personality.effects;
+
+        // Gathering bonus (increases drop rate)
+        if (effects.gathering_bonus) {
+            dropRateModifier += effects.gathering_bonus;
+        }
+        if (effects.gathering_penalty) {
+            dropRateModifier += effects.gathering_penalty;
+        }
+
+        // Material drop bonus (increases drop rate)
+        if (effects.material_drop_bonus) {
+            dropRateModifier += effects.material_drop_bonus;
+        }
+        if (effects.material_drop_penalty) {
+            dropRateModifier += effects.material_drop_penalty;
+        }
+
+        // Material bonus (increases amount)
+        if (effects.material_bonus) {
+            amountModifier += effects.material_bonus;
+        }
+
+        // Rare drop bonus (chance for extra materials)
+        if (effects.rare_drop_bonus) {
+            rareBonusChance = effects.rare_drop_bonus;
+        }
+    }
+
     for (let i = 0; i < iterations; i++) {
-        // Check drop rate
-        if (Math.random() > (activity.materialDropRate || 0.5)) continue;
+        // Check drop rate with personality modifier
+        const effectiveDropRate = (activity.materialDropRate || 0.5) * dropRateModifier;
+        if (Math.random() > effectiveDropRate) continue;
 
         // Select random material from zone
         const materialId = getRandomElement(zone.materials);
         const materialData = getMaterialById(materialId);
         if (!materialData) continue;
 
+        // Calculate amount with personality modifier
+        let amount = Math.floor(Math.random() * 3) + 1; // 1-3 materials
+        amount = Math.floor(amount * amountModifier);
+
+        // Rare drop bonus - chance for extra materials
+        if (rareBonusChance > 0 && Math.random() < rareBonusChance) {
+            amount += Math.floor(Math.random() * 2) + 1; // +1-2 extra materials
+        }
+
         // Add to inventory
-        const amount = Math.floor(Math.random() * 3) + 1; // 1-3 materials
         addMaterial(materialId, amount);
 
         // Track for message

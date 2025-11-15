@@ -5,6 +5,10 @@
       "name": "Brave",
       "emoji": "🦁",
       "description": "Fearless and determined",
+      "effects": {
+        "combat_bonus": 0.08,
+        "gathering_penalty": -0.05
+      },
       "dialogues": {
         "summon": [
           "I won't back down from any challenge!",
@@ -25,14 +29,6 @@
           "My strength grows! I can feel it!",
           "I'm getting stronger! Nothing can stop me now!",
           "This power... I will use it to protect everyone!"
-        ],
-        "low_health": [
-          "I won't give up... never!",
-          "This isn't enough to stop me!"
-        ],
-        "idle": [
-          "Ready for the next adventure!",
-          "Bring on the challenge!"
         ]
       }
     },
@@ -41,6 +37,10 @@
       "name": "Cheerful",
       "emoji": "😊",
       "description": "Optimistic and friendly",
+      "effects": {
+        "exp_bonus": 0.12,
+        "combat_penalty": -0.03
+      },
       "dialogues": {
         "summon": [
           "Yay! Let's be friends!",
@@ -61,14 +61,6 @@
           "Woohoo! I leveled up!",
           "Yippee! I'm getting better!",
           "Amazing! Look at me go!"
-        ],
-        "low_health": [
-          "Ow ow ow... but I'm okay!",
-          "Just a scratch! I think..."
-        ],
-        "idle": [
-          "La la la~ what's next?",
-          "I wonder what we'll do today!"
         ]
       }
     },
@@ -77,6 +69,10 @@
       "name": "Serious",
       "emoji": "😐",
       "description": "Focused and analytical",
+      "effects": {
+        "combat_bonus": 0.10,
+        "material_drop_penalty": -0.08
+      },
       "dialogues": {
         "summon": [
           "I will fulfill my duty.",
@@ -97,14 +93,6 @@
           "Progress noted. Continuing.",
           "Level increased. Performance optimized.",
           "Strength parameters improved."
-        ],
-        "low_health": [
-          "Damage sustained. Adjusting strategy.",
-          "This requires careful planning."
-        ],
-        "idle": [
-          "Awaiting next objective.",
-          "Standing by."
         ]
       }
     },
@@ -113,6 +101,9 @@
       "name": "Mysterious",
       "emoji": "🌙",
       "description": "Enigmatic and cryptic",
+      "effects": {
+        "random_variance": 0.15
+      },
       "dialogues": {
         "summon": [
           "The threads of fate have brought us together...",
@@ -133,14 +124,6 @@
           "The veil lifts... I see more clearly now.",
           "Power flows through the ancient paths.",
           "Another step towards destiny."
-        ],
-        "low_health": [
-          "The future grows dim...",
-          "Darkness creeps closer..."
-        ],
-        "idle": [
-          "The future is clouded...",
-          "I sense something..."
         ]
       }
     },
@@ -149,6 +132,10 @@
       "name": "Lazy",
       "emoji": "😴",
       "description": "Relaxed and unmotivated",
+      "effects": {
+        "activity_speed_penalty": -0.12,
+        "gold_bonus": 0.15
+      },
       "dialogues": {
         "summon": [
           "Do I really have to...? *yawn*",
@@ -169,14 +156,6 @@
           "Oh, I leveled up? Cool, I guess.",
           "More power means... more work, doesn't it? *sigh*",
           "Yay... I'm stronger... zzz"
-        ],
-        "low_health": [
-          "Ow... that actually hurt...",
-          "Can we just... not do this?"
-        ],
-        "idle": [
-          "Zzz... *snore*",
-          "Is it nap time yet?"
         ]
       }
     },
@@ -185,6 +164,11 @@
       "name": "Hotblooded",
       "emoji": "🔥",
       "description": "Passionate and intense",
+      "effects": {
+        "combat_bonus": 0.15,
+        "activity_speed_bonus": 0.10,
+        "durability_penalty": -0.08
+      },
       "dialogues": {
         "summon": [
           "YEAH! LET'S DO THIS!",
@@ -205,14 +189,6 @@
           "YES! I CAN FEEL THE POWER SURGING!",
           "THIS IS JUST THE BEGINNING! I'LL GET EVEN STRONGER!",
           "MY FLAMES BURN BRIGHTER THAN EVER!"
-        ],
-        "low_health": [
-          "IS THAT ALL YOU GOT?! I'M JUST GETTING STARTED!",
-          "PAIN ONLY MAKES ME STRONGER!"
-        ],
-        "idle": [
-          "WHERE'S THE NEXT CHALLENGE?!",
-          "I'M READY FOR ANYTHING!"
         ]
       }
     },
@@ -221,6 +197,10 @@
       "name": "Calm",
       "emoji": "🍃",
       "description": "Peaceful and composed",
+      "effects": {
+        "all_rewards_bonus": 0.05,
+        "activity_speed_penalty": -0.05
+      },
       "dialogues": {
         "summon": [
           "Peace be with you, friend.",
@@ -241,14 +221,269 @@
           "Growth comes naturally, like a flowing river.",
           "Strength through serenity.",
           "The path becomes clearer."
+        ]
+      }
+    },
+    {
+      "id": "greedy",
+      "name": "Greedy",
+      "emoji": "💰",
+      "description": "Motivated by treasure",
+      "effects": {
+        "gold_bonus": 0.25,
+        "exp_penalty": -0.12
+      },
+      "dialogues": {
+        "summon": [
+          "Show me the gold and I'm in!",
+          "I can smell treasure from here!",
+          "Let's make some money!"
         ],
-        "low_health": [
-          "Stay calm. All things pass.",
-          "Pain is temporary. Peace is eternal."
+        "activity_start": [
+          "There better be good loot here...",
+          "Time to get rich!",
+          "Gold, gold, gold!"
         ],
-        "idle": [
-          "I am at peace.",
-          "...breathing gently..."
+        "activity_complete": [
+          "Ka-ching! Not bad!",
+          "Is this all the loot? Hmm...",
+          "More gold for me!"
+        ],
+        "level_up": [
+          "Stronger means richer!",
+          "Higher level = better loot!",
+          "This is an investment!"
+        ]
+      }
+    },
+    {
+      "id": "timid",
+      "name": "Timid",
+      "emoji": "🐰",
+      "description": "Nervous but careful",
+      "effects": {
+        "combat_penalty": -0.10,
+        "gathering_bonus": 0.18,
+        "material_drop_bonus": 0.10
+      },
+      "dialogues": {
+        "summon": [
+          "H-hello... I'll do my best...",
+          "Um... nice to meet you...",
+          "I hope I can be helpful..."
+        ],
+        "activity_start": [
+          "O-okay... here I go...",
+          "I'll try not to mess up...",
+          "Please be careful..."
+        ],
+        "activity_complete": [
+          "Phew... I did it!",
+          "That wasn't so bad!",
+          "I'm glad that's over..."
+        ],
+        "level_up": [
+          "Oh! I got stronger!",
+          "Maybe I'm not so weak after all...",
+          "This feels... nice!"
+        ]
+      }
+    },
+    {
+      "id": "reckless",
+      "name": "Reckless",
+      "emoji": "⚡",
+      "description": "Bold and impulsive",
+      "effects": {
+        "all_rewards_bonus": 0.20,
+        "activity_speed_bonus": 0.15,
+        "failure_chance": 0.08
+      },
+      "dialogues": {
+        "summon": [
+          "No plan, no problem!",
+          "Let's wing it!",
+          "Fortune favors the bold!"
+        ],
+        "activity_start": [
+          "LEEROY JENKINS!",
+          "Who needs strategy? Let's go!",
+          "Full speed ahead!"
+        ],
+        "activity_complete": [
+          "See? Worked out fine!",
+          "Told you it'd work!",
+          "Piece of cake!"
+        ],
+        "level_up": [
+          "More power for crazy stunts!",
+          "I'm unstoppable now!",
+          "This is gonna be fun!"
+        ]
+      }
+    },
+    {
+      "id": "methodical",
+      "name": "Methodical",
+      "emoji": "📋",
+      "description": "Precise and thorough",
+      "effects": {
+        "activity_speed_penalty": -0.18,
+        "material_quality_bonus": 0.25,
+        "rare_drop_bonus": 0.15
+      },
+      "dialogues": {
+        "summon": [
+          "Everything must be done properly.",
+          "Precision is key.",
+          "Let's do this the right way."
+        ],
+        "activity_start": [
+          "Step one, check. Step two...",
+          "Following the procedure.",
+          "Measuring twice, cutting once."
+        ],
+        "activity_complete": [
+          "Perfect execution.",
+          "All according to plan.",
+          "Quality over quantity."
+        ],
+        "level_up": [
+          "Parameters optimized.",
+          "Efficiency increased.",
+          "Progress documented."
+        ]
+      }
+    },
+    {
+      "id": "lucky",
+      "name": "Lucky",
+      "emoji": "🍀",
+      "description": "Blessed by fortune",
+      "effects": {
+        "rare_drop_bonus": 0.12,
+        "critical_chance": 0.08,
+        "gold_bonus": 0.06
+      },
+      "dialogues": {
+        "summon": [
+          "Lucky you got me!",
+          "Good things just happen around me!",
+          "Today's your lucky day!"
+        ],
+        "activity_start": [
+          "I've got a good feeling about this!",
+          "Luck is on our side!",
+          "Watch this lucky streak!"
+        ],
+        "activity_complete": [
+          "Called it! Another success!",
+          "Luck never fails me!",
+          "Knew we'd get something good!"
+        ],
+        "level_up": [
+          "Luck and skill combined!",
+          "The stars align in my favor!",
+          "Fortune smiles upon me!"
+        ]
+      }
+    },
+    {
+      "id": "scholarly",
+      "name": "Scholarly",
+      "emoji": "📚",
+      "description": "Knowledgeable and wise",
+      "effects": {
+        "exp_bonus": 0.20,
+        "gold_penalty": -0.08,
+        "activity_speed_penalty": -0.06
+      },
+      "dialogues": {
+        "summon": [
+          "Knowledge is the true treasure.",
+          "I have much to learn here.",
+          "An interesting opportunity for study."
+        ],
+        "activity_start": [
+          "Let me apply my research...",
+          "Fascinating! Let's investigate.",
+          "According to my studies..."
+        ],
+        "activity_complete": [
+          "Data collected successfully.",
+          "Most enlightening!",
+          "I learned much from this."
+        ],
+        "level_up": [
+          "Knowledge deepens with experience!",
+          "Another chapter in my growth!",
+          "The learning never stops!"
+        ]
+      }
+    },
+    {
+      "id": "artistic",
+      "name": "Artistic",
+      "emoji": "🎨",
+      "description": "Creative and inspired",
+      "effects": {
+        "craft_quality_bonus": 0.22,
+        "material_bonus": 0.10,
+        "combat_penalty": -0.12
+      },
+      "dialogues": {
+        "summon": [
+          "Ah, the beauty of creation!",
+          "Everything is art!",
+          "Let's paint the world with our deeds!"
+        ],
+        "activity_start": [
+          "I see beauty in this task...",
+          "Let's make something wonderful!",
+          "Art in motion!"
+        ],
+        "activity_complete": [
+          "A masterpiece!",
+          "Beautifully done!",
+          "Like poetry in action!"
+        ],
+        "level_up": [
+          "My canvas expands!",
+          "More colors to paint with!",
+          "The muse blesses me!"
+        ]
+      }
+    },
+    {
+      "id": "competitive",
+      "name": "Competitive",
+      "emoji": "🏆",
+      "description": "Driven to be the best",
+      "effects": {
+        "exp_bonus": 0.15,
+        "combat_bonus": 0.12,
+        "team_penalty": -0.05
+      },
+      "dialogues": {
+        "summon": [
+          "I'll be number one!",
+          "Watch me surpass everyone!",
+          "I never lose!"
+        ],
+        "activity_start": [
+          "Time to show what I'm made of!",
+          "I'll beat my own record!",
+          "First place, here I come!"
+        ],
+        "activity_complete": [
+          "Another win for me!",
+          "Still undefeated!",
+          "That's how it's done!"
+        ],
+        "level_up": [
+          "Climbing the ranks!",
+          "I'm getting ahead!",
+          "Victory level up!"
         ]
       }
     }
