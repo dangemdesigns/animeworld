@@ -5,25 +5,30 @@
 
 /* CSS Variables */
 :root {
-    /* Dark Gaming Color Palette */
-    --bg-primary: #0a0e27;
-    --bg-secondary: #151932;
-    --bg-panel: #1a1f3a;
-    --bg-card: #1e2442;
-    --bg-hover: #252b4f;
-    --text-primary: #ffffff;
-    --text-secondary: #b8c5db;
-    --text-muted: #7884a0;
+    /* Dark Gaming Color Palette - Optimized for Readability */
+    /* Primary backgrounds use charcoal/deep navy for low eye strain */
+    --bg-primary: #121212;           /* Main dark background - deep charcoal */
+    --bg-secondary: #1a1a2e;         /* Secondary layer - dark navy */
+    --bg-panel: #212121;             /* Panel backgrounds - 5-10% lighter than primary */
+    --bg-card: #2c2c34;              /* Card backgrounds - lighter surface */
+    --bg-hover: #353540;             /* Hover states - subtle highlight */
 
-    /* Vibrant Gaming Accents - NO PASTEL */
-    --accent-primary: #6c5ce7;
-    --accent-secondary: #00b894;
-    --accent-danger: #ff6b6b;
-    --accent-warning: #feca57;
-    --accent-info: #48dbfb;
-    --accent-purple: #a55eea;
-    --accent-pink: #fd79a8;
-    --accent-orange: #ff9f43;
+    /* Text colors - Off-white for comfort, avoiding harsh pure white */
+    --text-primary: #e0e0e0;         /* Primary text - soft off-white */
+    --text-secondary: #b0b0b0;       /* Secondary text - medium gray */
+    --text-muted: #808080;           /* Muted text - subtle gray */
+
+    /* Vibrant Accent Colors - Used sparingly for highlights & interactivity */
+    --accent-primary: #6c5ce7;       /* Purple - primary actions */
+    --accent-secondary: #00b894;     /* Green - success states */
+    --accent-danger: #ff6b6b;        /* Red - danger/alerts */
+    --accent-warning: #feca57;       /* Yellow - warnings */
+    --accent-info: #48dbfb;          /* Cyan - information */
+    --accent-purple: #a55eea;        /* Alt purple */
+    --accent-pink: #fd79a8;          /* Pink - highlights */
+    --accent-orange: #ff9f43;        /* Orange - emphasis */
+    --accent-warm: #E8B4A0;          /* Warm accent - crafting/comfort */
+    --accent-gold: #D4AF37;          /* Gold - premium/legendary */
 
     /* Glows - Vibrant & Intense */
     --glow-primary: rgba(108, 92, 231, 0.6);
@@ -31,15 +36,17 @@
     --glow-danger: rgba(255, 107, 107, 0.6);
     --glow-warning: rgba(254, 202, 87, 0.6);
 
-    /* Borders & Shadows */
-    --border-subtle: rgba(255, 255, 255, 0.05);
-    --border-light: rgba(255, 255, 255, 0.1);
-    --border-medium: rgba(255, 255, 255, 0.15);
-    --border-bright: rgba(255, 255, 255, 0.3);
-    --shadow-sm: rgba(0, 0, 0, 0.2);
-    --shadow: rgba(0, 0, 0, 0.4);
-    --shadow-md: rgba(0, 0, 0, 0.6);
-    --shadow-lg: rgba(0, 0, 0, 0.8);
+    /* Borders & Shadows - Subtle depth through tonal differences */
+    --border-subtle: rgba(255, 255, 255, 0.06);
+    --border-light: rgba(255, 255, 255, 0.08);
+    --border-medium: rgba(255, 255, 255, 0.12);
+    --border-bright: rgba(255, 255, 255, 0.2);
+
+    /* Shadows - Subtle on dark backgrounds, used sparingly */
+    --shadow-sm: rgba(0, 0, 0, 0.3);
+    --shadow: rgba(0, 0, 0, 0.5);
+    --shadow-md: rgba(0, 0, 0, 0.7);
+    --shadow-lg: rgba(0, 0, 0, 0.9);
 
     /* Spacing */
     --spacing-xs: 0.5rem;
@@ -404,7 +411,7 @@ body::before {
 
 .btn-primary {
     background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-purple) 100%);
-    color: white;
+    color: var(--text-primary);
     border-color: transparent;
     box-shadow: 0 4px 16px var(--glow-primary);
 }
@@ -551,7 +558,7 @@ body::before {
 .btn-admin {
     width: 100%;
     background: linear-gradient(135deg, #FF6B6B 0%, #EE5A6F 100%);
-    color: white;
+    color: var(--text-primary);
     font-weight: 700;
     border: none;
     box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
@@ -584,13 +591,13 @@ body::before {
 
 .btn-logout:hover {
     background: var(--accent-warm);
-    color: white;
+    color: var(--text-primary);
 }
 
 /* Offline Progress Notification */
 .offline-progress {
     background: linear-gradient(135deg, #6BBE6B 0%, #4CAF50 100%);
-    color: white;
+    color: var(--text-primary);
     padding: var(--spacing-md);
     border-radius: var(--radius-md);
     margin-bottom: var(--spacing-md);
@@ -628,7 +635,7 @@ body::before {
 
 .tab-btn.active {
     background: var(--accent-warm);
-    color: white;
+    color: var(--text-primary);
 }
 
 .tab-btn:hover:not(.active) {
@@ -876,7 +883,7 @@ body::before {
 .btn-upgrade {
     width: 100%;
     background: linear-gradient(135deg, var(--accent-green) 0%, #5FA876 100%);
-    color: white;
+    color: var(--text-primary);
     font-weight: var(--font-weight-semibold);
     border: none;
     box-shadow: 0 3px 8px rgba(112, 194, 135, 0.3);
@@ -1030,7 +1037,7 @@ body::before {
 
 .activity-btn.active {
     background: linear-gradient(135deg, var(--accent-warm) 0%, #d9a48f 100%);
-    color: white;
+    color: var(--text-primary);
     border-color: var(--accent-warm);
     font-weight: var(--font-weight-semibold);
     box-shadow: 0 4px 12px rgba(232, 180, 160, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.2);
@@ -1056,7 +1063,7 @@ body::before {
 
 .activity-btn:hover:not(.active) {
     background: var(--accent-warm);
-    color: white;
+    color: var(--text-primary);
     transform: translateY(-2px);
 }
 
@@ -1299,7 +1306,7 @@ body::before {
 
 .rarity-trash .hero-rarity {
     background: var(--rarity-trash);
-    color: white;
+    color: var(--text-primary);
 }
 
 .rarity-common .hero-rarity {
@@ -1310,17 +1317,17 @@ body::before {
 
 .rarity-uncommon .hero-rarity {
     background: var(--rarity-uncommon);
-    color: white;
+    color: var(--text-primary);
 }
 
 .rarity-rare .hero-rarity {
     background: var(--rarity-rare);
-    color: white;
+    color: var(--text-primary);
 }
 
 .rarity-epic .hero-rarity {
     background: var(--rarity-epic);
-    color: white;
+    color: var(--text-primary);
     animation: pulse 2s ease-in-out infinite;
 }
 
@@ -1332,7 +1339,7 @@ body::before {
 
 .rarity-mythical .hero-rarity {
     background: linear-gradient(135deg, var(--rarity-mythical) 0%, var(--rarity-epic) 100%);
-    color: white;
+    color: var(--text-primary);
     animation: pulse 1s ease-in-out infinite;
 }
 
@@ -1369,7 +1376,7 @@ body::before {
     padding: 0.25rem 0.5rem;
     font-size: 0.7rem;
     background: var(--accent-warm);
-    color: white;
+    color: var(--text-primary);
     border: none;
     border-radius: 4px;
     cursor: pointer;
@@ -1502,7 +1509,7 @@ body::before {
     padding: 0.2rem 0.4rem;
     font-size: 0.65rem;
     background: var(--accent-warm);
-    color: white;
+    color: var(--text-primary);
     border: none;
     border-radius: 3px;
     cursor: pointer;
@@ -1592,7 +1599,7 @@ body::before {
 .summon-cost {
     padding: 0.25rem 0.5rem;
     background: var(--accent-gold);
-    color: white;
+    color: var(--text-primary);
     border-radius: 4px;
     font-size: 0.75rem;
     font-weight: 700;
