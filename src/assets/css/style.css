@@ -1,29 +1,41 @@
 /* ==========================================
    Echoes of the Lantern - Main Stylesheet
-   Aesthetic: Pastel, Warm, and Welcoming
+   Aesthetic: Dark Retro Mysterious Pastel
    ========================================== */
 
 /* CSS Variables */
 :root {
-    /* Colors */
-    --bg-primary: #FBF7F0;
-    --bg-secondary: #F5EDE3;
-    --bg-panel: #FFFFFF;
-    --bg-card: #FEFEFE;
-    --text-primary: #2C2C2C;
-    --text-secondary: #6B6B6B;
-    --text-muted: #9A9A9A;
-    --accent-warm: #E8B4A0;
-    --accent-gold: #D4AF37;
-    --accent-blue: #5B9BD5;
-    --accent-green: #70C287;
-    --accent-purple: #A78BFA;
-    --border-light: #E5D5C5;
-    --border-medium: #D4C4B4;
-    --shadow-sm: rgba(0, 0, 0, 0.05);
-    --shadow: rgba(0, 0, 0, 0.1);
-    --shadow-md: rgba(0, 0, 0, 0.15);
-    --shadow-lg: rgba(0, 0, 0, 0.2);
+    /* Dark Retro Color Palette */
+    --bg-primary: #0d1117;
+    --bg-secondary: #161b22;
+    --bg-panel: #1a1f2e;
+    --bg-card: #21262d;
+    --text-primary: #e6e6fa;
+    --text-secondary: #c9d1d9;
+    --text-muted: #8b949e;
+
+    /* Pastel Accents - Soft & Mysterious */
+    --accent-pink: #ffa4d5;
+    --accent-mint: #a8e6cf;
+    --accent-lavender: #b695c0;
+    --accent-peach: #ffb88c;
+    --accent-cyan: #89cff0;
+    --accent-gold: #ffd89b;
+
+    /* Retro Neon Glows */
+    --glow-pink: rgba(255, 164, 213, 0.3);
+    --glow-mint: rgba(168, 230, 207, 0.3);
+    --glow-lavender: rgba(182, 149, 192, 0.3);
+    --glow-cyan: rgba(137, 207, 240, 0.3);
+
+    /* Borders & Shadows */
+    --border-light: rgba(255, 255, 255, 0.08);
+    --border-medium: rgba(255, 255, 255, 0.12);
+    --border-bright: rgba(255, 255, 255, 0.2);
+    --shadow-sm: rgba(0, 0, 0, 0.3);
+    --shadow: rgba(0, 0, 0, 0.5);
+    --shadow-md: rgba(0, 0, 0, 0.6);
+    --shadow-lg: rgba(0, 0, 0, 0.8);
 
     /* Spacing */
     --spacing-xs: 0.5rem;
@@ -32,11 +44,11 @@
     --spacing-lg: 2rem;
     --spacing-xl: 3rem;
 
-    /* Border Radius */
-    --radius-sm: 8px;
-    --radius-md: 12px;
-    --radius-lg: 16px;
-    --radius-xl: 20px;
+    /* Border Radius - Retro Sharp Edges */
+    --radius-sm: 4px;
+    --radius-md: 6px;
+    --radius-lg: 8px;
+    --radius-xl: 12px;
 
     /* Transitions */
     --transition-fast: 0.15s ease;
@@ -58,12 +70,34 @@
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Courier New', 'Monaco', monospace;
     background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+    background-attachment: fixed;
     color: var(--text-primary);
     line-height: 1.6;
     min-height: 100vh;
     padding: var(--spacing-md);
+    position: relative;
+}
+
+/* Retro Scanline Effect */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.05) 0px,
+        rgba(0, 0, 0, 0.05) 1px,
+        transparent 1px,
+        transparent 2px
+    );
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.3;
 }
 
 /* Game Container */
@@ -72,31 +106,57 @@ body {
     margin: 0 auto;
 }
 
-/* Header */
+/* Header - Retro Neon Style */
 .game-header {
     text-align: center;
-    padding: var(--spacing-xl);
-    background: linear-gradient(135deg, var(--bg-panel) 0%, var(--bg-secondary) 100%);
-    border-radius: var(--radius-lg);
-    box-shadow: 0 4px 16px var(--shadow-md), 0 2px 4px var(--shadow-sm);
+    padding: var(--spacing-lg);
+    background: var(--bg-panel);
+    border-radius: var(--radius-md);
+    box-shadow: 0 0 20px var(--glow-pink), 0 8px 32px var(--shadow-lg);
     margin-bottom: var(--spacing-lg);
-    border: 1px solid var(--border-light);
+    border: 2px solid var(--border-bright);
+    position: relative;
+    overflow: hidden;
+}
+
+.game-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 164, 213, 0.1), transparent);
+    animation: shimmerScan 3s infinite;
+}
+
+@keyframes shimmerScan {
+    0%, 100% { left: -100%; }
+    50% { left: 100%; }
 }
 
 .game-header h1 {
-    font-size: 2.75rem;
+    font-size: 2.5rem;
     font-weight: var(--font-weight-bold);
-    color: var(--accent-warm);
+    color: var(--accent-pink);
     margin-bottom: var(--spacing-sm);
-    letter-spacing: -0.03em;
-    text-shadow: 0 2px 4px var(--shadow-sm);
+    letter-spacing: 0.1em;
+    text-shadow: 0 0 10px var(--glow-pink), 0 0 20px var(--glow-pink), 0 0 30px var(--glow-pink);
+    text-transform: uppercase;
+    position: relative;
+    z-index: 1;
 }
 
 .subtitle {
-    color: var(--text-secondary);
-    font-style: italic;
-    font-size: 1.05rem;
+    color: var(--accent-cyan);
+    font-style: normal;
+    font-size: 0.9rem;
     font-weight: var(--font-weight-normal);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    opacity: 0.8;
+    position: relative;
+    z-index: 1;
 }
 
 /* Main Game Area */
@@ -107,28 +167,32 @@ body {
     margin-bottom: var(--spacing-md);
 }
 
-/* Panels */
+/* Panels - Dark Minimalist Retro */
 .panel {
     background: var(--bg-panel);
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-sm);
     padding: var(--spacing-md);
-    box-shadow: 0 4px 12px var(--shadow-sm), 0 2px 4px var(--shadow-sm);
-    border: 1px solid var(--border-light);
-    transition: box-shadow var(--transition-base), transform var(--transition-base);
+    box-shadow: 0 0 15px var(--shadow), inset 0 1px 0 var(--border-light);
+    border: 1px solid var(--border-medium);
+    transition: all var(--transition-base);
+    position: relative;
 }
 
 .panel:hover {
-    box-shadow: 0 6px 16px var(--shadow), 0 3px 6px var(--shadow-sm);
+    border-color: var(--border-bright);
+    box-shadow: 0 0 25px var(--glow-lavender), inset 0 1px 0 var(--border-bright);
 }
 
 .panel h2 {
-    font-size: 1.5rem;
-    font-weight: var(--font-weight-semibold);
+    font-size: 1.2rem;
+    font-weight: var(--font-weight-bold);
     margin-bottom: var(--spacing-md);
-    color: var(--accent-warm);
-    border-bottom: 3px solid var(--border-light);
+    color: var(--accent-lavender);
+    border-bottom: 2px solid var(--border-medium);
     padding-bottom: var(--spacing-sm);
-    letter-spacing: -0.02em;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-shadow: 0 0 5px var(--glow-lavender);
 }
 
 /* Haven Stats */
@@ -143,21 +207,24 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: var(--spacing-sm);
-    background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-panel) 100%);
+    background: var(--bg-card);
     border-radius: var(--radius-sm);
-    box-shadow: 0 1px 3px var(--shadow-sm);
+    box-shadow: inset 0 1px 3px var(--shadow);
     border: 1px solid var(--border-light);
     transition: all var(--transition-fast);
 }
 
 .stat:hover {
-    transform: translateX(3px);
-    box-shadow: 0 2px 6px var(--shadow);
+    border-color: var(--accent-mint);
+    box-shadow: 0 0 10px var(--glow-mint), inset 0 1px 3px var(--shadow);
 }
 
 .stat-label {
-    font-weight: var(--font-weight-semibold);
-    color: var(--text-secondary);
+    font-weight: var(--font-weight-medium);
+    color: var(--text-muted);
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
 }
 
 .stat-value {
@@ -182,27 +249,31 @@ body {
 
 .hero-card {
     background: var(--bg-card);
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-sm);
     padding: var(--spacing-md);
     margin-bottom: var(--spacing-md);
-    border-left: 5px solid var(--accent-warm);
-    box-shadow: 0 2px 8px var(--shadow-sm), 0 1px 3px var(--shadow-sm);
+    border: 2px solid var(--border-medium);
+    border-left-width: 4px;
+    border-left-color: var(--accent-mint);
+    box-shadow: 0 0 10px var(--shadow), inset 0 1px 0 var(--border-light);
     transition: all var(--transition-base);
-    border: 1px solid var(--border-light);
-    border-left-width: 5px;
+    position: relative;
 }
 
 .hero-card:hover {
     transform: translateY(-3px);
-    box-shadow: 0 8px 20px var(--shadow-md), 0 3px 8px var(--shadow-sm);
+    border-color: var(--accent-mint);
+    box-shadow: 0 0 20px var(--glow-mint), 0 5px 15px var(--shadow);
 }
 
 .hero-card h3 {
-    font-size: 1.15rem;
-    font-weight: var(--font-weight-semibold);
+    font-size: 1.1rem;
+    font-weight: var(--font-weight-bold);
     margin-bottom: var(--spacing-sm);
-    color: var(--text-primary);
-    letter-spacing: -0.01em;
+    color: var(--accent-peach);
+    letter-spacing: 0.05em;
+    text-shadow: 0 0 5px var(--glow-lavender);
+    text-transform: uppercase;
 }
 
 .hero-stats {
@@ -261,68 +332,71 @@ body {
     border-left-color: #D88484;
 }
 
-/* Buttons */
+/* Buttons - Retro Neon Style */
 .btn {
     padding: var(--spacing-sm) var(--spacing-md);
-    border: none;
-    border-radius: var(--radius-md);
-    font-size: 0.95rem;
-    font-weight: var(--font-weight-medium);
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+    font-weight: var(--font-weight-bold);
     cursor: pointer;
     transition: all var(--transition-base);
-    background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-panel) 100%);
+    background: var(--bg-card);
     color: var(--text-primary);
-    border: 2px solid var(--border-light);
-    box-shadow: 0 2px 4px var(--shadow-sm);
+    border: 2px solid var(--border-medium);
+    box-shadow: 0 0 5px var(--shadow), inset 0 1px 0 var(--border-light);
     position: relative;
     overflow: hidden;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-family: 'Courier New', monospace;
 }
 
 .btn::before {
     content: '';
     position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 0;
-    height: 0;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.3);
-    transform: translate(-50%, -50%);
-    transition: width var(--transition-base), height var(--transition-base);
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left var(--transition-base);
 }
 
 .btn:hover::before {
-    width: 300px;
-    height: 300px;
+    left: 100%;
 }
 
 .btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px var(--shadow-md);
-    border-color: var(--border-medium);
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 15px var(--glow-cyan), 0 5px 15px var(--shadow);
+    color: var(--accent-cyan);
 }
 
 .btn:active {
     transform: translateY(0);
-    box-shadow: 0 2px 4px var(--shadow-sm);
+    box-shadow: 0 0 5px var(--shadow), inset 0 1px 0 var(--border-light);
 }
 
 .btn:disabled {
-    opacity: 0.5;
+    opacity: 0.3;
     cursor: not-allowed;
     transform: none;
+    border-color: var(--border-light);
 }
 
 .btn-primary {
-    background: var(--accent-warm);
-    color: white;
-    border-color: var(--accent-warm);
-    width: 100%;
-    font-weight: 600;
+    background: var(--bg-card);
+    color: var(--accent-pink);
+    border-color: var(--accent-pink);
+    box-shadow: 0 0 10px var(--glow-pink), inset 0 1px 0 var(--border-light);
 }
 
 .btn-primary:hover {
-    background: #d9a48f;
+    background: var(--accent-pink);
+    color: var(--bg-primary);
+    border-color: var(--accent-pink);
+    box-shadow: 0 0 20px var(--glow-pink), 0 5px 20px var(--shadow);
 }
 
 .btn-primary:disabled {
