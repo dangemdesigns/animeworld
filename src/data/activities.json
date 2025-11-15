@@ -66,6 +66,51 @@
       "requiresZone": false,
       "wisdomBonus": true,
       "description": "Focus the mind to gain wisdom and experience"
+    },
+    {
+      "id": "forge_equipment",
+      "name": "Forge Equipment",
+      "emoji": "⚒️",
+      "duration": 12000,
+      "goldReward": 0,
+      "expReward": 10,
+      "requiresZone": false,
+      "requiresBuilding": "forge",
+      "isCrafting": true,
+      "craftingType": "equipment",
+      "skillType": "crafting",
+      "skillExpReward": 20,
+      "description": "Craft weapons and armor at the forge"
+    },
+    {
+      "id": "brew_potion",
+      "name": "Brew Potion",
+      "emoji": "🧪",
+      "duration": 10000,
+      "goldReward": 0,
+      "expReward": 8,
+      "requiresZone": false,
+      "requiresBuilding": "alchemy_lab",
+      "isCrafting": true,
+      "craftingType": "potion",
+      "skillType": "alchemy",
+      "skillExpReward": 20,
+      "description": "Brew potions and elixirs at the alchemy lab"
+    },
+    {
+      "id": "craft_accessory",
+      "name": "Craft Accessory",
+      "emoji": "🛠️",
+      "duration": 11000,
+      "goldReward": 0,
+      "expReward": 9,
+      "requiresZone": false,
+      "requiresBuilding": "workshop",
+      "isCrafting": true,
+      "craftingType": "accessory",
+      "skillType": "crafting",
+      "skillExpReward": 18,
+      "description": "Craft rings, amulets, and accessories at the workshop"
     }
   ]
 }

@@ -803,6 +803,7 @@ function updateHeroesList(heroes) {
         if (!hero.awakeningTier) hero.awakeningTier = 1;
         if (!hero.perks) hero.perks = { slot1: null, slot2: null, slot3: null, slot4: null, slot5: null };
         if (!hero.perkSlotsUnlocked) hero.perkSlotsUnlocked = 2;
+        if (!hero.skills) hero.skills = { crafting_level: 1, crafting_exp: 0, alchemy_level: 1, alchemy_exp: 0 };
 
         const stats = hero.stats;
         const heroClass = window.gameData.classes.classes.find(c => c.id === hero.class);
@@ -1554,27 +1555,63 @@ function completeHeroActivity(hero) {
         }
     }
 
+    // Handle crafting activities
+    if (activity.isCrafting) {
+        const quality = calculateCraftQuality(hero, activity.requiresBuilding, activity.skillType);
+        let craftedItem = null;
+
+        if (activity.craftingType === 'potion') {
+            craftedItem = generatePotion(hero, quality);
+            currentUser.potions.push(craftedItem);
+            currentUser.statistics.potionsBrewed++;
+        } else {
+            // Equipment or accessory
+            craftedItem = generateEquipment(hero, quality, activity.craftingType);
+            currentUser.equipment.push(craftedItem);
+            currentUser.statistics.itemsCrafted++;
+        }
+
+        // Award skill exp
+        awardSkillExp(hero, activity.skillType, activity.skillExpReward);
+
+        // Log crafting success
+        const qualityEmoji = {
+            common: '⚪',
+            uncommon: '🟢',
+            rare: '🔵',
+            epic: '🟣',
+            legendary: '🟡'
+        };
+
+        addLocalLog(
+            `${activity.emoji} ${hero.name} crafted ${qualityEmoji[quality]} ${craftedItem.name}!`,
+            quality === 'legendary' || quality === 'epic' ? 'success' : 'info'
+        );
+    }
+
     // Check for level up
     const leveledUp = checkHeroLevelUp(hero);
 
-    // Generate story text
+    // Generate story text (only for non-crafting activities)
     let storyText = '';
-    if (zone && zone.stories && zone.stories.length > 0) {
+    if (!activity.isCrafting && zone && zone.stories && zone.stories.length > 0) {
         storyText = getRandomElement(zone.stories);
     }
 
-    // Create completion message
-    let message = `✅ ${hero.name} completed ${activity.emoji} ${activity.name}`;
-    if (zone) message += ` in ${zone.emoji} ${zone.name}`;
-    if (storyText) message += ` and ${storyText}`;
-    message += ` (+${goldReward} gold, +${expReward} exp`;
-    if (materialsGathered.length > 0) {
-        const materialText = materialsGathered.map(m => `${m.emoji} ${m.name} x${m.amount}`).join(', ');
-        message += `, +${materialText}`;
-    }
-    message += ')';
+    // Create completion message (only for non-crafting, crafting has custom message above)
+    if (!activity.isCrafting) {
+        let message = `✅ ${hero.name} completed ${activity.emoji} ${activity.name}`;
+        if (zone) message += ` in ${zone.emoji} ${zone.name}`;
+        if (storyText) message += ` and ${storyText}`;
+        message += ` (+${goldReward} gold, +${expReward} exp`;
+        if (materialsGathered.length > 0) {
+            const materialText = materialsGathered.map(m => `${m.emoji} ${m.name} x${m.amount}`).join(', ');
+            message += `, +${materialText}`;
+        }
+        message += ')';
 
-    addLocalLog(message, 'success');
+        addLocalLog(message, 'success');
+    }
 
     // Display story encounter if it occurred
     if (encounterEvent) {
@@ -2243,6 +2280,178 @@ window.awakenHero = function(heroId) {
     updateUIDisplays();
     saveLocalGameState();
 };
+
+/**
+ * Calculate craft quality based on building level, skill, and personality
+ */
+function calculateCraftQuality(hero, buildingId, craftType) {
+    const building = currentUser.buildings[buildingId];
+    if (!building) return 'common';
+
+    const buildingLevel = building.level;
+    const skillLevel = craftType === 'alchemy'
+        ? hero.skills.alchemy_level
+        : hero.skills.crafting_level;
+
+    // Base success chance from building (10% per level)
+    const baseChance = buildingLevel * 10;
+
+    // Skill bonus (5% per level)
+    const skillBonus = skillLevel * 5;
+
+    // Personality bonus
+    let personalityBonus = 0;
+    const personality = getPersonalityById(hero.personality);
+    if (personality && personality.effects) {
+        if (personality.effects.craft_quality_bonus) {
+            personalityBonus = personality.effects.craft_quality_bonus * 100; // Convert to percentage
+        }
+    }
+
+    const totalChance = baseChance + skillBonus + personalityBonus;
+    const roll = Math.random() * 100;
+
+    // Quality tiers based on total chance
+    if (roll < Math.min(totalChance * 0.05, 10)) return 'legendary';   // Up to 10% at max
+    if (roll < Math.min(totalChance * 0.15, 25)) return 'epic';        // Up to 25% at max
+    if (roll < Math.min(totalChance * 0.35, 45)) return 'rare';        // Up to 45% at max
+    if (roll < Math.min(totalChance * 0.60, 70)) return 'uncommon';    // Up to 70% at max
+    return 'common';
+}
+
+/**
+ * Generate crafted equipment
+ */
+function generateEquipment(hero, quality, craftType) {
+    const rarityMultipliers = {
+        common: 1.0,
+        uncommon: 1.3,
+        rare: 1.7,
+        epic: 2.2,
+        legendary: 3.0
+    };
+    const multiplier = rarityMultipliers[quality] || 1.0;
+
+    // Determine equipment type
+    let type, name, emoji, statBonuses;
+
+    if (craftType === 'accessory') {
+        const accessories = ['Ring', 'Amulet', 'Talisman', 'Charm'];
+        const accessoryType = getRandomElement(accessories);
+        type = 'accessory';
+        name = `${quality.charAt(0).toUpperCase() + quality.slice(1)} ${accessoryType}`;
+        emoji = accessoryType === 'Ring' ? '💍' : accessoryType === 'Amulet' ? '📿' : '🔮';
+
+        // Accessories give mixed stats
+        statBonuses = {
+            luck: Math.floor((5 + Math.random() * 5) * multiplier),
+            wisdom: Math.floor((3 + Math.random() * 4) * multiplier)
+        };
+    } else {
+        // Weapons and armor
+        const isWeapon = Math.random() < 0.5;
+        if (isWeapon) {
+            const weapons = ['Sword', 'Axe', 'Spear', 'Dagger', 'Bow'];
+            type = 'weapon';
+            name = `${quality.charAt(0).toUpperCase() + quality.slice(1)} ${getRandomElement(weapons)}`;
+            emoji = '⚔️';
+            statBonuses = {
+                strength: Math.floor((8 + Math.random() * 7) * multiplier),
+                agility: Math.floor((4 + Math.random() * 4) * multiplier)
+            };
+        } else {
+            const armors = ['Helm', 'Chestplate', 'Gauntlets', 'Boots', 'Shield'];
+            type = 'armor';
+            name = `${quality.charAt(0).toUpperCase() + quality.slice(1)} ${getRandomElement(armors)}`;
+            emoji = '🛡️';
+            statBonuses = {
+                defense: Math.floor((8 + Math.random() * 7) * multiplier),
+                health: Math.floor((15 + Math.random() * 10) * multiplier)
+            };
+        }
+    }
+
+    return {
+        id: generateId(),
+        type: type,
+        name: name,
+        quality: quality,
+        emoji: emoji,
+        stats: statBonuses,
+        craftedBy: hero.id,
+        craftedAt: Date.now()
+    };
+}
+
+/**
+ * Generate crafted potion
+ */
+function generatePotion(hero, quality) {
+    const rarityMultipliers = {
+        common: 1.0,
+        uncommon: 1.5,
+        rare: 2.0,
+        epic: 3.0,
+        legendary: 5.0
+    };
+    const multiplier = rarityMultipliers[quality] || 1.0;
+
+    const potionTypes = [
+        { id: 'health', name: 'Health Potion', emoji: '❤️', effect: 'heal' },
+        { id: 'mana', name: 'Mana Potion', emoji: '💙', effect: 'restore_mana' },
+        { id: 'strength', name: 'Strength Elixir', emoji: '💪', effect: 'boost_strength' },
+        { id: 'experience', name: 'Experience Tonic', emoji: '✨', effect: 'bonus_exp' }
+    ];
+
+    const potionType = getRandomElement(potionTypes);
+    const effectValue = Math.floor((20 + Math.random() * 30) * multiplier);
+
+    return {
+        id: generateId(),
+        type: 'potion',
+        potionType: potionType.id,
+        name: `${quality.charAt(0).toUpperCase() + quality.slice(1)} ${potionType.name}`,
+        quality: quality,
+        emoji: potionType.emoji,
+        effect: { [potionType.effect]: effectValue },
+        quantity: 1,
+        craftedBy: hero.id,
+        craftedAt: Date.now()
+    };
+}
+
+/**
+ * Award skill exp and check for level-up
+ */
+function awardSkillExp(hero, skillType, amount) {
+    if (!hero.skills) {
+        hero.skills = {
+            crafting_level: 1,
+            crafting_exp: 0,
+            alchemy_level: 1,
+            alchemy_exp: 0
+        };
+    }
+
+    const levelKey = `${skillType}_level`;
+    const expKey = `${skillType}_exp`;
+
+    hero.skills[expKey] += amount;
+
+    // Check for level up (100 exp per level, increases by 50 each level)
+    const expNeeded = 100 + (hero.skills[levelKey] - 1) * 50;
+
+    if (hero.skills[expKey] >= expNeeded) {
+        hero.skills[expKey] -= expNeeded;
+        hero.skills[levelKey]++;
+
+        const skillName = skillType === 'alchemy' ? 'Alchemy' : 'Crafting';
+        addLocalLog(
+            `⭐ ${hero.name}'s ${skillName} skill increased to Level ${hero.skills[levelKey]}!`,
+            'success'
+        );
+    }
+}
 
 /**
  * Get building data by ID
