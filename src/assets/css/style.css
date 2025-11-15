@@ -1,39 +1,43 @@
 /* ==========================================
    Echoes of the Lantern - Main Stylesheet
-   Aesthetic: Dark Retro Mysterious Pastel
+   Aesthetic: Dark Modern Gaming UI
    ========================================== */
 
 /* CSS Variables */
 :root {
-    /* Dark Retro Color Palette */
-    --bg-primary: #0d1117;
-    --bg-secondary: #161b22;
-    --bg-panel: #1a1f2e;
-    --bg-card: #21262d;
-    --text-primary: #e6e6fa;
-    --text-secondary: #c9d1d9;
-    --text-muted: #8b949e;
+    /* Dark Gaming Color Palette */
+    --bg-primary: #0a0e27;
+    --bg-secondary: #151932;
+    --bg-panel: #1a1f3a;
+    --bg-card: #1e2442;
+    --bg-hover: #252b4f;
+    --text-primary: #ffffff;
+    --text-secondary: #b8c5db;
+    --text-muted: #7884a0;
 
-    /* Pastel Accents - Soft & Mysterious */
-    --accent-pink: #ffa4d5;
-    --accent-mint: #a8e6cf;
-    --accent-lavender: #b695c0;
-    --accent-peach: #ffb88c;
-    --accent-cyan: #89cff0;
-    --accent-gold: #ffd89b;
+    /* Vibrant Gaming Accents - NO PASTEL */
+    --accent-primary: #6c5ce7;
+    --accent-secondary: #00b894;
+    --accent-danger: #ff6b6b;
+    --accent-warning: #feca57;
+    --accent-info: #48dbfb;
+    --accent-purple: #a55eea;
+    --accent-pink: #fd79a8;
+    --accent-orange: #ff9f43;
 
-    /* Retro Neon Glows */
-    --glow-pink: rgba(255, 164, 213, 0.3);
-    --glow-mint: rgba(168, 230, 207, 0.3);
-    --glow-lavender: rgba(182, 149, 192, 0.3);
-    --glow-cyan: rgba(137, 207, 240, 0.3);
+    /* Glows - Vibrant & Intense */
+    --glow-primary: rgba(108, 92, 231, 0.6);
+    --glow-secondary: rgba(0, 184, 148, 0.6);
+    --glow-danger: rgba(255, 107, 107, 0.6);
+    --glow-warning: rgba(254, 202, 87, 0.6);
 
     /* Borders & Shadows */
-    --border-light: rgba(255, 255, 255, 0.08);
-    --border-medium: rgba(255, 255, 255, 0.12);
-    --border-bright: rgba(255, 255, 255, 0.2);
-    --shadow-sm: rgba(0, 0, 0, 0.3);
-    --shadow: rgba(0, 0, 0, 0.5);
+    --border-subtle: rgba(255, 255, 255, 0.05);
+    --border-light: rgba(255, 255, 255, 0.1);
+    --border-medium: rgba(255, 255, 255, 0.15);
+    --border-bright: rgba(255, 255, 255, 0.3);
+    --shadow-sm: rgba(0, 0, 0, 0.2);
+    --shadow: rgba(0, 0, 0, 0.4);
     --shadow-md: rgba(0, 0, 0, 0.6);
     --shadow-lg: rgba(0, 0, 0, 0.8);
 
@@ -44,16 +48,16 @@
     --spacing-lg: 2rem;
     --spacing-xl: 3rem;
 
-    /* Border Radius - Retro Sharp Edges */
-    --radius-sm: 4px;
-    --radius-md: 6px;
-    --radius-lg: 8px;
-    --radius-xl: 12px;
+    /* Border Radius - Modern Smooth */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
 
     /* Transitions */
     --transition-fast: 0.15s ease;
-    --transition-base: 0.3s ease;
-    --transition-slow: 0.5s ease;
+    --transition-base: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 
     /* Typography */
     --font-weight-normal: 400;
@@ -70,17 +74,17 @@
 }
 
 body {
-    font-family: 'Courier New', 'Monaco', monospace;
-    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+    background: radial-gradient(ellipse at top, var(--bg-secondary) 0%, var(--bg-primary) 100%);
     background-attachment: fixed;
     color: var(--text-primary);
     line-height: 1.6;
     min-height: 100vh;
-    padding: var(--spacing-md);
+    padding: var(--spacing-lg);
     position: relative;
 }
 
-/* Retro Scanline Effect */
+/* Modern Subtle Grid Pattern */
 body::before {
     content: '';
     position: fixed;
@@ -88,33 +92,32 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    background: repeating-linear-gradient(
-        0deg,
-        rgba(0, 0, 0, 0.05) 0px,
-        rgba(0, 0, 0, 0.05) 1px,
-        transparent 1px,
-        transparent 2px
-    );
+    background-image:
+        linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    background-size: 50px 50px;
     pointer-events: none;
-    z-index: 9999;
+    z-index: 0;
     opacity: 0.3;
 }
 
 /* Game Container */
 .game-container {
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
+    position: relative;
+    z-index: 1;
 }
 
-/* Header - Retro Neon Style */
+/* Header - Modern Gaming */
 .game-header {
     text-align: center;
-    padding: var(--spacing-lg);
-    background: var(--bg-panel);
-    border-radius: var(--radius-md);
-    box-shadow: 0 0 20px var(--glow-pink), 0 8px 32px var(--shadow-lg);
+    padding: var(--spacing-xl) var(--spacing-lg);
+    background: linear-gradient(135deg, var(--bg-panel) 0%, var(--bg-card) 100%);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 10px 40px var(--shadow-lg);
     margin-bottom: var(--spacing-lg);
-    border: 2px solid var(--border-bright);
+    border: 1px solid var(--border-medium);
     position: relative;
     overflow: hidden;
 }
@@ -123,40 +126,29 @@ body::before {
     content: '';
     position: absolute;
     top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 164, 213, 0.1), transparent);
-    animation: shimmerScan 3s infinite;
-}
-
-@keyframes shimmerScan {
-    0%, 100% { left: -100%; }
-    50% { left: 100%; }
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent-primary), var(--accent-info), var(--accent-secondary));
 }
 
 .game-header h1 {
-    font-size: 2.5rem;
+    font-size: 3rem;
     font-weight: var(--font-weight-bold);
-    color: var(--accent-pink);
+    background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-info) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
     margin-bottom: var(--spacing-sm);
-    letter-spacing: 0.1em;
-    text-shadow: 0 0 10px var(--glow-pink), 0 0 20px var(--glow-pink), 0 0 30px var(--glow-pink);
-    text-transform: uppercase;
-    position: relative;
-    z-index: 1;
+    letter-spacing: -0.02em;
 }
 
 .subtitle {
-    color: var(--accent-cyan);
+    color: var(--text-secondary);
     font-style: normal;
-    font-size: 0.9rem;
-    font-weight: var(--font-weight-normal);
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    opacity: 0.8;
-    position: relative;
-    z-index: 1;
+    font-size: 1rem;
+    font-weight: var(--font-weight-medium);
+    opacity: 0.9;
 }
 
 /* Main Game Area */
@@ -167,32 +159,34 @@ body::before {
     margin-bottom: var(--spacing-md);
 }
 
-/* Panels - Dark Minimalist Retro */
+/* Panels - Modern Gaming Card Style */
 .panel {
     background: var(--bg-panel);
-    border-radius: var(--radius-sm);
-    padding: var(--spacing-md);
-    box-shadow: 0 0 15px var(--shadow), inset 0 1px 0 var(--border-light);
-    border: 1px solid var(--border-medium);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-lg);
+    box-shadow: 0 8px 32px var(--shadow);
+    border: 1px solid var(--border-light);
     transition: all var(--transition-base);
     position: relative;
+    backdrop-filter: blur(10px);
 }
 
 .panel:hover {
-    border-color: var(--border-bright);
-    box-shadow: 0 0 25px var(--glow-lavender), inset 0 1px 0 var(--border-bright);
+    border-color: var(--border-medium);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 48px var(--shadow-md);
 }
 
 .panel h2 {
-    font-size: 1.2rem;
+    font-size: 1.25rem;
     font-weight: var(--font-weight-bold);
     margin-bottom: var(--spacing-md);
-    color: var(--accent-lavender);
+    color: var(--text-primary);
     border-bottom: 2px solid var(--border-medium);
     padding-bottom: var(--spacing-sm);
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    text-shadow: 0 0 5px var(--glow-lavender);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
 }
 
 /* Haven Stats */
@@ -206,30 +200,29 @@ body::before {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: var(--spacing-sm);
-    background: var(--bg-card);
-    border-radius: var(--radius-sm);
-    box-shadow: inset 0 1px 3px var(--shadow);
-    border: 1px solid var(--border-light);
-    transition: all var(--transition-fast);
+    padding: var(--spacing-md);
+    background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-hover) 100%);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-subtle);
+    transition: all var(--transition-base);
 }
 
 .stat:hover {
-    border-color: var(--accent-mint);
-    box-shadow: 0 0 10px var(--glow-mint), inset 0 1px 3px var(--shadow);
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 20px var(--glow-primary);
+    transform: translateX(4px);
 }
 
 .stat-label {
     font-weight: var(--font-weight-medium);
     color: var(--text-muted);
-    text-transform: uppercase;
-    font-size: 0.75rem;
-    letter-spacing: 0.1em;
+    font-size: 0.875rem;
 }
 
 .stat-value {
-    font-weight: 700;
-    color: var(--accent-gold);
+    font-weight: var(--font-weight-bold);
+    color: var(--accent-warning);
+    font-size: 1.125rem;
 }
 
 /* Heroes List */
@@ -247,55 +240,81 @@ body::before {
     font-style: italic;
 }
 
+/* Hero Cards - Modern Gaming with Image Space */
 .hero-card {
-    background: var(--bg-card);
-    border-radius: var(--radius-sm);
-    padding: var(--spacing-md);
+    background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-hover) 100%);
+    border-radius: var(--radius-lg);
+    padding: 0;
     margin-bottom: var(--spacing-md);
-    border: 2px solid var(--border-medium);
-    border-left-width: 4px;
-    border-left-color: var(--accent-mint);
-    box-shadow: 0 0 10px var(--shadow), inset 0 1px 0 var(--border-light);
+    border: 1px solid var(--border-light);
+    box-shadow: 0 8px 24px var(--shadow);
     transition: all var(--transition-base);
     position: relative;
+    overflow: hidden;
+}
+
+.hero-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 120px;
+    background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-info) 100%);
+    opacity: 0.1;
+    z-index: 0;
 }
 
 .hero-card:hover {
-    transform: translateY(-3px);
-    border-color: var(--accent-mint);
-    box-shadow: 0 0 20px var(--glow-mint), 0 5px 15px var(--shadow);
+    transform: translateY(-8px);
+    border-color: var(--accent-primary);
+    box-shadow: 0 16px 48px var(--glow-primary), 0 0 0 1px var(--accent-primary);
 }
 
 .hero-card h3 {
-    font-size: 1.1rem;
+    font-size: 1.25rem;
     font-weight: var(--font-weight-bold);
-    margin-bottom: var(--spacing-sm);
-    color: var(--accent-peach);
-    letter-spacing: 0.05em;
-    text-shadow: 0 0 5px var(--glow-lavender);
-    text-transform: uppercase;
+    margin-bottom: var(--spacing-xs);
+    color: var(--text-primary);
+    padding: var(--spacing-md) var(--spacing-md) 0;
+    position: relative;
+    z-index: 1;
 }
 
 .hero-stats {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: var(--spacing-xs);
-    font-size: 0.9rem;
-    margin-top: var(--spacing-xs);
+    font-size: 0.875rem;
+    padding: var(--spacing-sm) var(--spacing-md);
+    position: relative;
+    z-index: 1;
 }
 
 .hero-stat {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: var(--spacing-xs);
-    background: rgba(0, 0, 0, 0.02);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    background: rgba(0, 0, 0, 0.2);
     border-radius: var(--radius-sm);
-    transition: background var(--transition-fast);
+    transition: all var(--transition-fast);
+    border: 1px solid transparent;
 }
 
 .hero-stat:hover {
-    background: rgba(0, 0, 0, 0.04);
+    background: rgba(0, 0, 0, 0.3);
+    border-color: var(--accent-primary);
+}
+
+.hero-stat span:first-child {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+.hero-stat span:last-child {
+    color: var(--text-primary);
+    font-weight: var(--font-weight-semibold);
 }
 
 .hero-activity {
@@ -332,71 +351,68 @@ body::before {
     border-left-color: #D88484;
 }
 
-/* Buttons - Retro Neon Style */
+/* Buttons - Modern Vibrant Gaming */
 .btn {
     padding: var(--spacing-sm) var(--spacing-md);
-    border-radius: var(--radius-sm);
-    font-size: 0.85rem;
-    font-weight: var(--font-weight-bold);
+    border-radius: var(--radius-md);
+    font-size: 0.9rem;
+    font-weight: var(--font-weight-semibold);
     cursor: pointer;
     transition: all var(--transition-base);
     background: var(--bg-card);
     color: var(--text-primary);
     border: 2px solid var(--border-medium);
-    box-shadow: 0 0 5px var(--shadow), inset 0 1px 0 var(--border-light);
+    box-shadow: 0 4px 12px var(--shadow-sm);
     position: relative;
     overflow: hidden;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    font-family: 'Courier New', monospace;
 }
 
 .btn::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-    transition: left var(--transition-base);
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    transform: translate(-50%, -50%);
+    transition: width var(--transition-slow), height var(--transition-slow);
 }
 
 .btn:hover::before {
-    left: 100%;
+    width: 300px;
+    height: 300px;
 }
 
 .btn:hover {
     transform: translateY(-2px);
-    border-color: var(--accent-cyan);
-    box-shadow: 0 0 15px var(--glow-cyan), 0 5px 15px var(--shadow);
-    color: var(--accent-cyan);
+    border-color: var(--accent-info);
+    box-shadow: 0 6px 24px var(--glow-primary);
 }
 
 .btn:active {
     transform: translateY(0);
-    box-shadow: 0 0 5px var(--shadow), inset 0 1px 0 var(--border-light);
+    box-shadow: 0 2px 8px var(--shadow-sm);
 }
 
 .btn:disabled {
-    opacity: 0.3;
+    opacity: 0.4;
     cursor: not-allowed;
     transform: none;
-    border-color: var(--border-light);
 }
 
 .btn-primary {
-    background: var(--bg-card);
-    color: var(--accent-pink);
-    border-color: var(--accent-pink);
-    box-shadow: 0 0 10px var(--glow-pink), inset 0 1px 0 var(--border-light);
+    background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-purple) 100%);
+    color: white;
+    border-color: transparent;
+    box-shadow: 0 4px 16px var(--glow-primary);
 }
 
 .btn-primary:hover {
-    background: var(--accent-pink);
-    color: var(--bg-primary);
-    border-color: var(--accent-pink);
-    box-shadow: 0 0 20px var(--glow-pink), 0 5px 20px var(--shadow);
+    background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-primary) 100%);
+    box-shadow: 0 8px 32px var(--glow-primary);
+    border-color: transparent;
 }
 
 .btn-primary:disabled {
