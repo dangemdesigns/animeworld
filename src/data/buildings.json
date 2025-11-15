@@ -1,0 +1,67 @@
+{
+  "buildings": [
+    {
+      "id": "forge",
+      "name": "Forge",
+      "emoji": "⚒️",
+      "description": "Craft weapons and armor for your heroes",
+      "maxLevel": 5,
+      "upgradeCosts": [
+        {},
+        { "wood": 50, "stone": 30, "iron": 20 },
+        { "wood": 100, "stone": 60, "iron": 40, "crystal": 10 },
+        { "wood": 200, "stone": 120, "iron": 80, "crystal": 30, "mithril": 10 },
+        { "wood": 400, "stone": 240, "iron": 160, "crystal": 60, "mithril": 30, "adamantite": 10 }
+      ],
+      "benefits": [
+        "Unlocks basic weapon crafting",
+        "Unlocks armor crafting, +10% craft quality",
+        "Unlocks rare equipment, +20% craft quality",
+        "Unlocks epic equipment, +30% craft quality",
+        "Unlocks legendary equipment, +50% craft quality"
+      ]
+    },
+    {
+      "id": "alchemy_lab",
+      "name": "Alchemy Lab",
+      "emoji": "🧪",
+      "description": "Brew potions and elixirs to aid your heroes",
+      "maxLevel": 5,
+      "upgradeCosts": [
+        {},
+        { "herbs": 50, "crystal": 20, "essence": 10 },
+        { "herbs": 100, "crystal": 40, "essence": 30, "moonstone": 10 },
+        { "herbs": 200, "crystal": 80, "essence": 60, "moonstone": 30, "phoenix_feather": 5 },
+        { "herbs": 400, "crystal": 160, "essence": 120, "moonstone": 60, "phoenix_feather": 15, "dragon_scale": 5 }
+      ],
+      "benefits": [
+        "Unlocks basic potion brewing",
+        "Unlocks advanced potions, +10% potion quality",
+        "Unlocks rare elixirs, +20% potion quality",
+        "Unlocks epic elixirs, +30% potion quality",
+        "Unlocks legendary elixirs, +50% potion quality"
+      ]
+    },
+    {
+      "id": "workshop",
+      "name": "Workshop",
+      "emoji": "🛠️",
+      "description": "Craft accessories and special items",
+      "maxLevel": 5,
+      "upgradeCosts": [
+        {},
+        { "wood": 40, "leather": 30, "gem": 15 },
+        { "wood": 80, "leather": 60, "gem": 30, "silk": 20 },
+        { "wood": 160, "leather": 120, "gem": 60, "silk": 40, "gold_ore": 20 },
+        { "wood": 320, "leather": 240, "gem": 120, "silk": 80, "gold_ore": 40, "platinum": 15 }
+      ],
+      "benefits": [
+        "Unlocks basic accessory crafting",
+        "Unlocks rings and amulets, +10% craft quality",
+        "Unlocks rare accessories, +20% craft quality",
+        "Unlocks epic accessories, +30% craft quality",
+        "Unlocks legendary accessories, +50% craft quality"
+      ]
+    }
+  ]
+}

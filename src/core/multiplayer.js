@@ -38,15 +38,24 @@ async function initGame() {
             guildHall: [], // Stored heroes (unlimited)
             materials: {}, // Material inventory
             crafting: [], // Items being crafted
+            equipment: [], // Crafted equipment
+            potions: [], // Crafted potions
             unlockedZones: ['whispering_woods'], // Start with first zone
             soulEssence: 0, // For converting duplicates
             summonPity: { basic: 0, advanced: 0, elite: 0 }, // Pity counters
             activeHeroSlots: 5, // Start with 5 active slots
             lastDailyFree: 0, // Timestamp for daily free summon
+            buildings: { // Haven buildings
+                forge: { level: 1 },
+                alchemy_lab: { level: 1 },
+                workshop: { level: 1 }
+            },
             statistics: { // Track player stats
                 totalSummons: 0,
                 legendariesSummoned: 0,
-                heroesAwakened: 0
+                heroesAwakened: 0,
+                itemsCrafted: 0,
+                potionsBrewed: 0
             }
         };
         console.log('🆕 Starting new game');
@@ -54,13 +63,16 @@ async function initGame() {
         // Ensure new properties exist for old saves
         if (!user.materials) user.materials = {};
         if (!user.crafting) user.crafting = [];
+        if (!user.equipment) user.equipment = [];
+        if (!user.potions) user.potions = [];
         if (!user.unlockedZones) user.unlockedZones = ['whispering_woods'];
         if (!user.guildHall) user.guildHall = [];
         if (!user.soulEssence) user.soulEssence = 0;
         if (!user.summonPity) user.summonPity = { basic: 0, advanced: 0, elite: 0 };
         if (!user.activeHeroSlots) user.activeHeroSlots = 5;
         if (!user.lastDailyFree) user.lastDailyFree = 0;
-        if (!user.statistics) user.statistics = { totalSummons: 0, legendariesSummoned: 0, heroesAwakened: 0 };
+        if (!user.buildings) user.buildings = { forge: { level: 1 }, alchemy_lab: { level: 1 }, workshop: { level: 1 } };
+        if (!user.statistics) user.statistics = { totalSummons: 0, legendariesSummoned: 0, heroesAwakened: 0, itemsCrafted: 0, potionsBrewed: 0 };
         console.log('📂 Loaded saved game');
     }
 
@@ -86,6 +98,7 @@ async function initGame() {
     updateGuildHallList();
     updateZonesDisplay();
     updateMaterialsDisplay();
+    updateBuildingsDisplay();
 
     // Initialize activity log
     addLocalLog('Welcome to Echoes of the Lantern!', 'info');
@@ -424,7 +437,7 @@ async function performSummon(summonType, cost) {
  */
 async function loadGameData() {
     try {
-        const [classesRes, namesRes, activitiesRes, zonesRes, materialsRes, craftingRes, perksRes, personalitiesRes, storyEventsRes] = await Promise.all([
+        const [classesRes, namesRes, activitiesRes, zonesRes, materialsRes, craftingRes, perksRes, personalitiesRes, storyEventsRes, buildingsRes] = await Promise.all([
             fetch('src/data/classes.json'),
             fetch('src/data/heroNames.json'),
             fetch('src/data/activities.json'),
@@ -433,7 +446,8 @@ async function loadGameData() {
             fetch('src/data/crafting.json'),
             fetch('src/data/perks.json'),
             fetch('src/data/personalities.json'),
-            fetch('src/data/storyEvents.json')
+            fetch('src/data/storyEvents.json'),
+            fetch('src/data/buildings.json')
         ]);
 
         window.gameData = {
@@ -445,10 +459,11 @@ async function loadGameData() {
             crafting: await craftingRes.json(),
             perks: await perksRes.json(),
             personalities: await personalitiesRes.json(),
-            storyEvents: await storyEventsRes.json()
+            storyEvents: await storyEventsRes.json(),
+            buildings: await buildingsRes.json()
         };
 
-        console.log('✅ Game data loaded (including perks, personalities, and story events)');
+        console.log('✅ Game data loaded (including buildings)');
     } catch (error) {
         console.error('Failed to load game data:', error);
         throw error;
@@ -2220,6 +2235,142 @@ window.awakenHero = function(heroId) {
 
     updateHeroesList(currentUser.heroes);
     updateUIDisplays();
+    saveLocalGameState();
+};
+
+/**
+ * Get building data by ID
+ */
+function getBuildingById(buildingId) {
+    if (!window.gameData || !window.gameData.buildings) return null;
+    return window.gameData.buildings.buildings.find(b => b.id === buildingId);
+}
+
+/**
+ * Update buildings display
+ */
+function updateBuildingsDisplay() {
+    const buildingsList = document.getElementById('buildings-list');
+    if (!buildingsList || !window.gameData || !window.gameData.buildings) return;
+
+    buildingsList.innerHTML = window.gameData.buildings.buildings.map(building => {
+        const currentLevel = currentUser.buildings[building.id]?.level || 1;
+        const isMaxLevel = currentLevel >= building.maxLevel;
+        const nextLevel = currentLevel + 1;
+        const upgradeCost = building.upgradeCosts[nextLevel] || {};
+
+        // Check if can afford upgrade
+        let canAfford = true;
+        let costHTML = '';
+        if (!isMaxLevel) {
+            const costs = Object.entries(upgradeCost).map(([mat, amount]) => {
+                const material = getMaterialById(mat);
+                const owned = currentUser.materials[mat] || 0;
+                const hasEnough = owned >= amount;
+                if (!hasEnough) canAfford = false;
+
+                const colorClass = hasEnough ? 'cost-ok' : 'cost-needed';
+                return `<span class="${colorClass}">${material?.emoji || '📦'} ${amount} (${owned})</span>`;
+            }).join(', ');
+            costHTML = costs || 'Max Level';
+        }
+
+        return `
+            <div class="building-card">
+                <div class="building-header">
+                    <h3>${building.emoji} ${building.name}</h3>
+                    <span class="building-level">Level ${currentLevel}/${building.maxLevel}</span>
+                </div>
+                <p class="building-desc">${building.description}</p>
+
+                <div class="building-benefits">
+                    <strong>Current Benefits:</strong>
+                    <p class="benefit-text">✨ ${building.benefits[currentLevel - 1]}</p>
+                    ${!isMaxLevel ? `
+                        <strong style="margin-top: 0.5rem; display: block;">Next Level:</strong>
+                        <p class="benefit-text benefit-next">🌟 ${building.benefits[currentLevel]}</p>
+                    ` : '<p class="benefit-text" style="color: var(--accent-gold);">⭐ MAX LEVEL REACHED!</p>'}
+                </div>
+
+                ${!isMaxLevel ? `
+                    <div class="building-cost">
+                        <strong>Upgrade Cost:</strong>
+                        <div class="cost-list">${costHTML}</div>
+                    </div>
+                    <button class="btn btn-upgrade"
+                            onclick="window.upgradeBuilding('${building.id}')"
+                            ${!canAfford ? 'disabled' : ''}>
+                        ⬆️ Upgrade to Level ${nextLevel}
+                    </button>
+                ` : ''}
+            </div>
+        `;
+    }).join('');
+}
+
+/**
+ * Global helper: Upgrade building
+ */
+window.upgradeBuilding = function(buildingId) {
+    const buildingData = getBuildingById(buildingId);
+    if (!buildingData) {
+        alert('Building not found!');
+        return;
+    }
+
+    const currentLevel = currentUser.buildings[buildingId]?.level || 1;
+
+    if (currentLevel >= buildingData.maxLevel) {
+        alert(`${buildingData.name} is already at max level!`);
+        return;
+    }
+
+    const nextLevel = currentLevel + 1;
+    const upgradeCost = buildingData.upgradeCosts[nextLevel];
+
+    // Check if can afford
+    for (const [materialId, amount] of Object.entries(upgradeCost)) {
+        const owned = currentUser.materials[materialId] || 0;
+        if (owned < amount) {
+            const material = getMaterialById(materialId);
+            alert(`Not enough ${material?.name || materialId}! Need ${amount}, have ${owned}.`);
+            return;
+        }
+    }
+
+    // Confirm upgrade
+    const costText = Object.entries(upgradeCost).map(([mat, amount]) => {
+        const material = getMaterialById(mat);
+        return `${material?.emoji || '📦'} ${material?.name || mat} x${amount}`;
+    }).join(', ');
+
+    const confirm = window.confirm(
+        `Upgrade ${buildingData.emoji} ${buildingData.name} to Level ${nextLevel}?\n\n` +
+        `Cost: ${costText}\n\n` +
+        `Benefit: ${buildingData.benefits[nextLevel - 1]}`
+    );
+
+    if (!confirm) return;
+
+    // Deduct materials
+    for (const [materialId, amount] of Object.entries(upgradeCost)) {
+        currentUser.materials[materialId] -= amount;
+        if (currentUser.materials[materialId] <= 0) {
+            delete currentUser.materials[materialId];
+        }
+    }
+
+    // Upgrade building
+    currentUser.buildings[buildingId].level = nextLevel;
+
+    addLocalLog(
+        `🏗️ Upgraded ${buildingData.emoji} ${buildingData.name} to Level ${nextLevel}!`,
+        'success'
+    );
+
+    // Update displays
+    updateBuildingsDisplay();
+    updateMaterialsDisplay();
     saveLocalGameState();
 };
 
