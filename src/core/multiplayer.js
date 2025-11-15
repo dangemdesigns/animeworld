@@ -1629,8 +1629,7 @@ function completeHeroActivity(hero) {
         addLocalLog(encounterEvent.story, 'info');
     }
 
-    // Add personality dialogue for activity completion
-    const personality = getPersonalityById(hero.personality);
+    // Add personality dialogue for activity completion (reuse personality variable from above)
     if (personality && personality.dialogues && personality.dialogues.activity_complete) {
         const dialogue = getRandomElement(personality.dialogues.activity_complete);
         addLocalLog(`${personality.emoji} ${hero.name}: "${dialogue}"`, 'info');
