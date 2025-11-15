@@ -716,11 +716,13 @@ body::before {
 }
 
 .zone-card {
-    background: linear-gradient(135deg, var(--bg-secondary) 0%, #F0E6DA 100%);
+    background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-hover) 100%);
     border-radius: var(--radius-sm);
     padding: var(--spacing-sm);
     border-left: 4px solid var(--accent-gold);
     transition: all 0.3s ease;
+    border: 1px solid var(--border-light);
+    border-left-width: 4px;
 }
 
 .zone-card:hover {
@@ -1126,26 +1128,26 @@ body::before {
 /* Hero Card Rarity Styling */
 .hero-card.rarity-trash {
     border-left-color: var(--rarity-trash);
-    background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+    background: linear-gradient(135deg, var(--bg-card) 0%, rgba(139, 139, 139, 0.08) 100%);
 }
 
 .hero-card.rarity-common {
     border-left-color: var(--rarity-common);
-    background: linear-gradient(135deg, #fafafa 0%, #f0f0f0 100%);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-hover) 100%);
+    box-shadow: 0 2px 8px rgba(255, 255, 255, 0.05);
 }
 
 .hero-card.rarity-uncommon {
     border-left-color: var(--rarity-uncommon);
-    background: linear-gradient(135deg, #f0f8f0 0%, #e8f5e8 100%);
-    box-shadow: 0 2px 12px rgba(107, 190, 107, 0.2);
+    background: linear-gradient(135deg, var(--bg-card) 0%, rgba(107, 190, 107, 0.1) 100%);
+    box-shadow: 0 2px 12px rgba(107, 190, 107, 0.3);
 }
 
 .hero-card.rarity-rare {
     border-left-color: var(--rarity-rare);
     border-left-width: 5px;
-    background: linear-gradient(135deg, #f0f6ff 0%, #e8f2ff 100%);
-    box-shadow: 0 4px 16px rgba(107, 163, 255, 0.3);
+    background: linear-gradient(135deg, var(--bg-card) 0%, rgba(107, 163, 255, 0.1) 100%);
+    box-shadow: 0 4px 16px rgba(107, 163, 255, 0.4);
     position: relative;
 }
 
@@ -1156,15 +1158,15 @@ body::before {
     left: 0;
     right: 0;
     bottom: 0;
-    border-radius: var(--radius-sm);
-    background: linear-gradient(135deg, rgba(107, 163, 255, 0.1) 0%, transparent 100%);
+    border-radius: var(--radius-lg);
+    background: linear-gradient(135deg, rgba(107, 163, 255, 0.06) 0%, transparent 100%);
     pointer-events: none;
 }
 
 .hero-card.rarity-epic {
     border-left-color: var(--rarity-epic);
     border-left-width: 6px;
-    background: linear-gradient(135deg, #f8f0ff 0%, #f0e8ff 100%);
+    background: linear-gradient(135deg, var(--bg-card) 0%, rgba(199, 112, 255, 0.1) 100%);
     box-shadow: 0 6px 20px rgba(199, 112, 255, 0.4);
     position: relative;
     animation: epicGlow 3s ease-in-out infinite;
@@ -1177,15 +1179,15 @@ body::before {
     left: 0;
     right: 0;
     bottom: 0;
-    border-radius: var(--radius-sm);
-    background: linear-gradient(135deg, rgba(199, 112, 255, 0.15) 0%, transparent 100%);
+    border-radius: var(--radius-lg);
+    background: linear-gradient(135deg, rgba(199, 112, 255, 0.08) 0%, transparent 100%);
     pointer-events: none;
 }
 
 .hero-card.rarity-legendary {
     border-left-color: var(--rarity-legendary);
     border-left-width: 7px;
-    background: linear-gradient(135deg, #fffdf0 0%, #fff8e0 100%);
+    background: linear-gradient(135deg, var(--bg-card) 0%, rgba(255, 215, 0, 0.1) 100%);
     box-shadow: 0 8px 24px rgba(255, 215, 0, 0.5);
     position: relative;
     animation: legendaryGlow 2s ease-in-out infinite;
@@ -1198,8 +1200,8 @@ body::before {
     left: 0;
     right: 0;
     bottom: 0;
-    border-radius: var(--radius-sm);
-    background: linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, transparent 100%);
+    border-radius: var(--radius-lg);
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, transparent 100%);
     pointer-events: none;
     animation: shimmer 2s infinite;
 }
@@ -1207,7 +1209,7 @@ body::before {
 .hero-card.rarity-mythical {
     border-left-color: var(--rarity-mythical);
     border-left-width: 8px;
-    background: linear-gradient(135deg, #fffdf8 0%, #fff8f0 100%);
+    background: linear-gradient(135deg, var(--bg-card) 0%, rgba(255, 23, 68, 0.1) 100%);
     box-shadow: 0 10px 30px rgba(255, 23, 68, 0.6);
     position: relative;
     animation: mythicalGlow 1.5s ease-in-out infinite;
@@ -1229,8 +1231,8 @@ body::before {
     left: 0;
     right: 0;
     bottom: 0;
-    border-radius: var(--radius-sm);
-    background: linear-gradient(135deg, rgba(255, 23, 68, 0.25) 0%, rgba(199, 112, 255, 0.15) 50%, rgba(107, 163, 255, 0.15) 100%);
+    border-radius: var(--radius-lg);
+    background: linear-gradient(135deg, rgba(255, 23, 68, 0.08) 0%, rgba(199, 112, 255, 0.05) 50%, transparent 100%);
     pointer-events: none;
     animation: mythicalShift 3s ease-in-out infinite;
 }
@@ -1551,7 +1553,7 @@ body::before {
 }
 
 .summon-option {
-    background: linear-gradient(135deg, var(--bg-secondary) 0%, #F0E6DA 100%);
+    background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-hover) 100%);
     border-radius: var(--radius-sm);
     padding: var(--spacing-sm);
     border: 2px solid var(--border-light);
@@ -1564,8 +1566,8 @@ body::before {
 }
 
 .summon-free {
-    border-color: #6BBE6B;
-    background: linear-gradient(135deg, #f0f8f0 0%, #e8f5e8 100%);
+    border-color: var(--accent-secondary);
+    background: linear-gradient(135deg, var(--bg-card) 0%, rgba(0, 184, 148, 0.15) 100%);
 }
 
 .summon-basic {
@@ -1573,14 +1575,14 @@ body::before {
 }
 
 .summon-advanced {
-    border-color: #6BA3FF;
-    background: linear-gradient(135deg, #f0f6ff 0%, #e8f2ff 100%);
+    border-color: var(--accent-info);
+    background: linear-gradient(135deg, var(--bg-card) 0%, rgba(72, 219, 251, 0.15) 100%);
 }
 
 .summon-elite {
-    border-color: #FFD700;
-    background: linear-gradient(135deg, #fffdf0 0%, #fff8e0 100%);
-    box-shadow: 0 2px 12px rgba(255, 215, 0, 0.2);
+    border-color: var(--accent-gold);
+    background: linear-gradient(135deg, var(--bg-card) 0%, rgba(212, 175, 55, 0.15) 100%);
+    box-shadow: 0 2px 12px rgba(255, 215, 0, 0.3);
 }
 
 .summon-header {
