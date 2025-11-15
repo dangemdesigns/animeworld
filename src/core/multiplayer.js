@@ -1448,8 +1448,7 @@ function startHeroActivity(hero, activityId) {
     const zoneText = zone ? ` in ${zone.emoji} ${zone.name}` : '';
     addLocalLog(`🎯 ${hero.name} started ${activity.emoji} ${activity.name}${zoneText}`, 'info');
 
-    // Add personality dialogue for activity start
-    const personality = getPersonalityById(hero.personality);
+    // Add personality dialogue for activity start (reuse personality variable from above)
     if (personality && personality.dialogues && personality.dialogues.activity_start) {
         const dialogue = getRandomElement(personality.dialogues.activity_start);
         addLocalLog(`${personality.emoji} ${hero.name}: "${dialogue}"`, 'info');
