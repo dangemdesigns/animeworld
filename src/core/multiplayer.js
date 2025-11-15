@@ -628,6 +628,12 @@ function generateHero(summonType = 'basic') {
             luck: Math.floor((10 + (heroClass.bonuses.luck || 0)) * multiplier),
             classEmoji: heroClass.emoji
         },
+        skills: {
+            crafting_level: 1,
+            crafting_exp: 0,
+            alchemy_level: 1,
+            alchemy_exp: 0
+        },
         perks: {
             slot1: startingPerks[0],
             slot2: startingPerks[1],
