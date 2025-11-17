@@ -107,7 +107,8 @@
                         </div>
                         <p class="summon-desc">Standard summoning ritual</p>
                         <div class="summon-rates">Common: 55% | Uncommon: 35% | Rare: 10%</div>
-                        <button class="btn btn-primary" id="basic-summon-btn">Summon</button>
+                        <button class="btn btn-primary" id="basic-summon-btn">Summon (50g)</button>
+                        <button class="btn btn-bulk-summon" onclick="window.performBulkSummon('basic', 50)">Bulk Summon (500g)</button>
                         <div class="pity-counter">Luck Boost: <span id="basic-pity">0</span>/10</div>
                     </div>
 
@@ -119,7 +120,8 @@
                         </div>
                         <p class="summon-desc">Enhanced summoning circle</p>
                         <div class="summon-rates">Uncommon: 60% | Rare: 30% | Epic: 9% | Legendary: 0.8%</div>
-                        <button class="btn btn-primary" id="advanced-summon-btn">Summon</button>
+                        <button class="btn btn-primary" id="advanced-summon-btn">Summon (150g)</button>
+                        <button class="btn btn-bulk-summon" onclick="window.performBulkSummon('advanced', 150)">Bulk Summon (1500g)</button>
                         <div class="pity-counter">Luck Boost: <span id="advanced-pity">0</span>/10</div>
                     </div>
 
@@ -131,7 +133,8 @@
                         </div>
                         <p class="summon-desc">Legendary summoning ritual</p>
                         <div class="summon-rates">Rare: 55% | Epic: 36% | Legendary: 8.5% | Mythical: 0.5%</div>
-                        <button class="btn btn-primary" id="elite-summon-btn">Summon</button>
+                        <button class="btn btn-primary" id="elite-summon-btn">Summon (400g)</button>
+                        <button class="btn btn-bulk-summon" onclick="window.performBulkSummon('elite', 400)">Bulk Summon (4000g)</button>
                         <div class="pity-counter">Luck Boost: <span id="elite-pity">0</span>/10</div>
                     </div>
                 </div>
@@ -167,6 +170,40 @@
             <!-- Heroes Panel -->
             <section class="panel heroes-panel">
                 <h2>✨ Your Heroes (Active Roster)</h2>
+
+                <!-- Hero Filters -->
+                <div class="hero-filters">
+                    <div class="filter-group">
+                        <label class="filter-label">Sort By</label>
+                        <select id="hero-sort" class="filter-select">
+                            <option value="level">Level (High to Low)</option>
+                            <option value="rarity">Rarity (Best First)</option>
+                            <option value="class">Class</option>
+                            <option value="name">Name</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Filter Rarity</label>
+                        <select id="hero-filter-rarity" class="filter-select">
+                            <option value="all">All Rarities</option>
+                            <option value="mythical">Mythical Only</option>
+                            <option value="legendary">Legendary+</option>
+                            <option value="epic">Epic+</option>
+                            <option value="rare">Rare+</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Filter Class</label>
+                        <select id="hero-filter-class" class="filter-select">
+                            <option value="all">All Classes</option>
+                            <option value="warrior">⚔️ Warrior</option>
+                            <option value="mage">🔮 Mage</option>
+                            <option value="ranger">🏹 Ranger</option>
+                            <option value="healer">💚 Healer</option>
+                        </select>
+                    </div>
+                </div>
+
                 <div id="heroes-list" class="heroes-list">
                     <p class="empty-message">No heroes yet. Summon your first hero!</p>
                 </div>
