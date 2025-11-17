@@ -251,6 +251,11 @@ function cacheElements() {
     elements.basicPity = document.getElementById('basic-pity');
     elements.advancedPity = document.getElementById('advanced-pity');
     elements.elitePity = document.getElementById('elite-pity');
+
+    // Hero filter elements
+    elements.heroSort = document.getElementById('hero-sort');
+    elements.heroFilterRarity = document.getElementById('hero-filter-rarity');
+    elements.heroFilterClass = document.getElementById('hero-filter-class');
 }
 
 /**
@@ -261,6 +266,17 @@ function setupGameListeners() {
     elements.basicSummonBtn.addEventListener('click', () => handleSummonHero('basic', 50));
     elements.advancedSummonBtn.addEventListener('click', () => handleSummonHero('advanced', 150));
     elements.eliteSummonBtn.addEventListener('click', () => handleSummonHero('elite', 400));
+
+    // Hero filter listeners
+    if (elements.heroSort) {
+        elements.heroSort.addEventListener('change', () => updateHeroesList(currentUser.heroes));
+    }
+    if (elements.heroFilterRarity) {
+        elements.heroFilterRarity.addEventListener('change', () => updateHeroesList(currentUser.heroes));
+    }
+    if (elements.heroFilterClass) {
+        elements.heroFilterClass.addEventListener('change', () => updateHeroesList(currentUser.heroes));
+    }
 }
 
 /**
@@ -330,7 +346,7 @@ async function handleSummonHero(summonType, cost) {
 /**
  * Perform summon with type and cost
  */
-async function performSummon(summonType, cost) {
+async function performSummon(summonType, cost, suppressCelebration = false) {
     if (currentUser.gold < cost) {
         alert(`Not enough gold! Need ${cost} gold for this summon.`);
         return;
@@ -351,6 +367,11 @@ async function performSummon(summonType, cost) {
         // Get class and personality data for display
         const heroClass = window.gameData.classes.classes.find(c => c.id === hero.class);
         const personality = getPersonalityById(hero.personality);
+
+        // Show celebration modal for epic+ heroes
+        if (!suppressCelebration) {
+            showCelebrationModal(hero, heroClass, personality);
+        }
 
         // Check if hero roster is full
         if (currentUser.heroes.length >= currentUser.activeHeroSlots) {
@@ -793,7 +814,58 @@ function updateHeroesList(heroes) {
             return;
         }
 
-        elements.heroesList.innerHTML = heroes.map(hero => {
+        // Apply filters and sorting
+        let filteredHeroes = [...heroes];
+
+        // Filter by rarity
+        if (elements.heroFilterRarity) {
+            const rarityFilter = elements.heroFilterRarity.value;
+            if (rarityFilter !== 'all') {
+                const rarityHierarchy = ['common', 'uncommon', 'rare', 'epic', 'legendary', 'mythical'];
+                const minRarityIndex = rarityHierarchy.indexOf(rarityFilter);
+                filteredHeroes = filteredHeroes.filter(hero => {
+                    const heroRarityIndex = rarityHierarchy.indexOf(hero.rarity);
+                    return heroRarityIndex >= minRarityIndex;
+                });
+            }
+        }
+
+        // Filter by class
+        if (elements.heroFilterClass) {
+            const classFilter = elements.heroFilterClass.value;
+            if (classFilter !== 'all') {
+                filteredHeroes = filteredHeroes.filter(hero => hero.class === classFilter);
+            }
+        }
+
+        // Sort heroes
+        if (elements.heroSort) {
+            const sortBy = elements.heroSort.value;
+            const rarityOrder = { mythical: 6, legendary: 5, epic: 4, rare: 3, uncommon: 2, common: 1 };
+
+            switch (sortBy) {
+                case 'level':
+                    filteredHeroes.sort((a, b) => b.level - a.level);
+                    break;
+                case 'rarity':
+                    filteredHeroes.sort((a, b) => (rarityOrder[b.rarity] || 0) - (rarityOrder[a.rarity] || 0));
+                    break;
+                case 'class':
+                    filteredHeroes.sort((a, b) => a.class.localeCompare(b.class));
+                    break;
+                case 'name':
+                    filteredHeroes.sort((a, b) => a.name.localeCompare(b.name));
+                    break;
+            }
+        }
+
+        // Show count
+        if (filteredHeroes.length === 0) {
+            elements.heroesList.innerHTML = '<p class="empty-message">No heroes match your filters.</p>';
+            return;
+        }
+
+        elements.heroesList.innerHTML = filteredHeroes.map(hero => {
         // Ensure hero has new properties (for old saves)
         if (!hero.current_zone) hero.current_zone = 'whispering_woods';
         if (!hero.activity_queue) hero.activity_queue = [];
@@ -1521,6 +1593,14 @@ function completeHeroActivity(hero) {
     // Apply rewards
     currentUser.gold += goldReward;
     hero.exp += expReward;
+
+    // Show floating text for rewards (if significant)
+    if (goldReward > 0) {
+        createFloatingText(`+${goldReward} 💰`, 'gold');
+    }
+    if (expReward > 0) {
+        createFloatingText(`+${expReward} EXP`, 'exp');
+    }
 
     // Gather materials if applicable
     let materialsGathered = [];
@@ -2586,6 +2666,162 @@ window.upgradeBuilding = function(buildingId) {
     updateMaterialsDisplay();
     saveLocalGameState();
 };
+
+/**
+ * ==========================================
+ * POLISH & VISUAL EFFECTS
+ * ==========================================
+ */
+
+/**
+ * Show celebration modal for rare summons
+ */
+function showCelebrationModal(hero, heroClass, personality) {
+    // Only show for epic and above
+    if (!['epic', 'legendary', 'mythical'].includes(hero.rarity)) return;
+
+    // Create modal
+    const modal = document.createElement('div');
+    modal.className = 'celebration-modal';
+
+    const rarityText = {
+        epic: '💫 EPIC! 💫',
+        legendary: '🔥 LEGENDARY! 🔥',
+        mythical: '⚡ MYTHICAL! ⚡'
+    };
+
+    const dialogue = personality ? getRandomElement(personality.dialogues.summon) : '';
+
+    modal.innerHTML = `
+        <div class="celebration-content">
+            <div class="celebration-rarity ${hero.rarity}">${rarityText[hero.rarity]}</div>
+            <div class="celebration-hero-name">${hero.stats.classEmoji} ${hero.name}</div>
+            <div class="celebration-class">${heroClass.name}</div>
+            ${dialogue ? `<div class="celebration-dialogue">${personality.emoji} "${dialogue}"</div>` : ''}
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    // Create confetti for legendary/mythical
+    if (hero.rarity === 'legendary' || hero.rarity === 'mythical') {
+        for (let i = 0; i < 50; i++) {
+            setTimeout(() => {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.background = ['#FFD700', '#FF1744', '#C770FF', '#48dbfb'][Math.floor(Math.random() * 4)];
+                confetti.style.animationDelay = Math.random() * 0.5 + 's';
+                modal.appendChild(confetti);
+
+                setTimeout(() => confetti.remove(), 3000);
+            }, i * 20);
+        }
+    }
+
+    // Remove after 2.5 seconds
+    setTimeout(() => {
+        modal.style.opacity = '0';
+        setTimeout(() => modal.remove(), 300);
+    }, 2500);
+}
+
+/**
+ * Create floating text animation
+ */
+function createFloatingText(text, type = 'gold', targetElement = null) {
+    const floatingText = document.createElement('div');
+    floatingText.className = `floating-text ${type}`;
+    floatingText.textContent = text;
+
+    // Position near target element or center of screen
+    if (targetElement) {
+        const rect = targetElement.getBoundingClientRect();
+        floatingText.style.position = 'fixed';
+        floatingText.style.left = rect.left + (rect.width / 2) + 'px';
+        floatingText.style.top = rect.top + 'px';
+    } else {
+        floatingText.style.position = 'fixed';
+        floatingText.style.left = '50%';
+        floatingText.style.top = '50%';
+        floatingText.style.transform = 'translate(-50%, -50%)';
+    }
+
+    document.body.appendChild(floatingText);
+
+    // Remove after animation
+    setTimeout(() => floatingText.remove(), 1500);
+}
+
+/**
+ * Perform bulk summon (10x)
+ */
+async function performBulkSummon(summonType, costPerSummon) {
+    const totalCost = costPerSummon * 10;
+
+    if (currentUser.gold < totalCost) {
+        alert(`Not enough gold! Need ${totalCost} gold for 10 summons.`);
+        return;
+    }
+
+    // Confirm bulk summon
+    const confirm = window.confirm(
+        `Summon 10 heroes for ${totalCost} gold?\n\n` +
+        `(${costPerSummon} gold each)`
+    );
+
+    if (!confirm) return;
+
+    // Store results
+    const results = {
+        common: 0,
+        uncommon: 0,
+        rare: 0,
+        epic: 0,
+        legendary: 0,
+        mythical: 0
+    };
+
+    // Perform 10 summons
+    for (let i = 0; i < 10; i++) {
+        await performSummon(summonType, costPerSummon, true); // Pass true to suppress individual celebrations
+
+        // Get the last summoned hero
+        const lastHero = currentUser.heroes[currentUser.heroes.length - 1] ||
+                        currentUser.guildHall[currentUser.guildHall.length - 1];
+
+        if (lastHero) {
+            results[lastHero.rarity]++;
+        }
+
+        // Small delay between summons
+        await new Promise(resolve => setTimeout(resolve, 100));
+    }
+
+    // Show summary
+    const summary = Object.entries(results)
+        .filter(([_, count]) => count > 0)
+        .map(([rarity, count]) => `${rarity.toUpperCase()}: ${count}`)
+        .join('\n');
+
+    addLocalLog(`📦 Bulk Summon Complete! Results:\n${summary}`, 'success');
+
+    // Show celebration for best rarity pulled
+    if (results.mythical > 0) {
+        alert(`🎉 BULK SUMMON COMPLETE! 🎉\n\n${summary}\n\nYou pulled ${results.mythical} MYTHICAL hero(es)!`);
+    } else if (results.legendary > 0) {
+        alert(`🎉 BULK SUMMON COMPLETE! 🎉\n\n${summary}\n\nYou pulled ${results.legendary} LEGENDARY hero(es)!`);
+    } else if (results.epic > 0) {
+        alert(`🎉 Bulk Summon Complete!\n\n${summary}\n\n${results.epic} EPIC hero(es) summoned!`);
+    } else {
+        alert(`Bulk Summon Complete!\n\n${summary}`);
+    }
+}
+
+/**
+ * Make bulk summon available globally
+ */
+window.performBulkSummon = performBulkSummon;
 
 // Start the game when DOM is loaded
 if (document.readyState === 'loading') {
